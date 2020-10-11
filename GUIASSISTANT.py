@@ -46,6 +46,7 @@ try:
 	from tkinter import ttk
 	from tkinter import messagebox
 	from tkinter import colorchooser
+	from PIL import Image, ImageTk
 	from time import sleep
 	from threading import Thread
 except Exception as e:
@@ -158,7 +159,7 @@ def speak(text, display=False, icon=False):
 	engine.say(text)
 	engine.runAndWait()
 
-def record(clearChat=True):
+def record(clearChat=True, iconDisplay=True):
 	print('\nListening...')
 	AITaskStatusLbl['text'] = 'Listening...'
 	r = sr.Recognizer()
@@ -174,7 +175,7 @@ def record(clearChat=True):
 			print(f"\nUser said: {said}")
 			if clearChat:
 				clearChatScreen()
-			Label(chat_frame, image=userIcon, bg=chatBgColor).pack(anchor='e',pady=0)
+			if iconDisplay: Label(chat_frame, image=userIcon, bg=chatBgColor).pack(anchor='e',pady=0)
 			attachTOframe(said)
 		except Exception as e:
 			print(e)
@@ -220,15 +221,15 @@ def main(text):
 
 		if 'email' in text:
 			speak('Whom do you want to send the email?', True, True)
-			Label(chat_frame, image=userIcon, bg=chatBgColor).pack(anchor='e',pady=0)
+			# Label(chat_frame, image=userIcon, bg=chatBgColor).pack(anchor='e',pady=0)
 			emailPOPUP()
 			attachTOframe(rec_email)
-			speak('What is the Subject?', True, True)
-			subject = record(False)
-			speak('What message you want to send ?', True, True)
-			message = record(False)
+			speak('What is the Subject?', True)
+			subject = record(False, False)
+			speak('What message you want to send ?', True)
+			message = record(False, False)
 			Thread(target=webScrapping.email, args=(rec_email,message,subject,) ).start()
-			speak('Email has been Sended', True, True)
+			speak('Email has been Sended', True)
 			return
 
 		if isContain(text, ['covid','virus']):
@@ -250,6 +251,11 @@ def main(text):
 			return
 
 		if isContain(text, ['search', 'image', 'show the']):
+			if 'image' in text:
+				Thread(target=showImages, args=(text,)).start()
+				speak('Here are the results...', True, True)
+				# showImages(text)
+				return
 			speak(webScrapping.googleSearch(text), True, True)
 			return
 			
@@ -370,7 +376,17 @@ def main(text):
 			speak('Your name is, ' + ownerName, True, True)
 			return
 
-		speak('Result Not Found', True, True)
+		if 'thank you' in text:
+			speak("You're Welcome Sir !", True, True)
+			return
+
+		if isContain(text, ['your name', 'who are you']):
+			speak("I'm your Personal Assistant. You can call me by any name.")
+			return
+			
+		speak("Here's what I found on the web... ", True, True)
+		webScrapping.googleSearch(text)
+		
 
 
 def voiceMedium():
@@ -407,6 +423,37 @@ def deleteUserData():
 						#####################
 						####### GUI #########
 						#####################
+img0, img1, img2, img3 = None, None, None, None
+def showImages(query):
+	global img0, img1, img2, img3
+	webScrapping.downloadImage(query)
+
+	#Showing Images
+	imageContainer = Frame(chat_frame, bg='#EAEAEA')
+	imageContainer.pack(anchor='w')
+
+	img0 = Image.open('Downloads/0.jpg')
+	img0 = img0.resize((120,100), Image.ANTIALIAS)
+	img0 = ImageTk.PhotoImage(img0)
+	
+	img1 = Image.open('Downloads/1.jpg')
+	img1 = img1.resize((120,100), Image.ANTIALIAS)
+	img1 = ImageTk.PhotoImage(img1)
+	
+	img2 = Image.open('Downloads/2.jpg')
+	img2 = img2.resize((120,100), Image.ANTIALIAS)
+	img2 = ImageTk.PhotoImage(img2)
+	
+	img3 = Image.open('Downloads/3.jpg')
+	img3 = img3.resize((120,100), Image.ANTIALIAS)
+	img3 = ImageTk.PhotoImage(img3)
+
+	Label(imageContainer, image=img0, bg='#EAEAEA').grid(row=0, column=0)
+	Label(imageContainer, image=img1, bg='#EAEAEA').grid(row=0, column=1)
+	Label(imageContainer, image=img2, bg='#EAEAEA').grid(row=1, column=0)
+	Label(imageContainer, image=img3, bg='#EAEAEA').grid(row=1, column=1)
+	print('Done')
+
 
 def sendEmail1():
 	global rec_email
@@ -483,28 +530,28 @@ if __name__ == '__main__':
 	bottomFrame1 = Frame(root1, bg='#dfdfdf', height=100)
 	bottomFrame1.pack(fill=X, side=BOTTOM)
 
-	cbl = PhotoImage(file='extrafiles/centralButton.png')
+	cbl = PhotoImage(file='extrafiles/images/centralButton.png')
 	Label(bottomFrame1, fg='white', image=cbl, bg='#dfdfdf').pack(pady=17)
 	AITaskStatusLbl = Label(bottomFrame1, text='    Offline', fg='white', bg='#14A769', font=('Arial', 16))
 	AITaskStatusLbl.place(x=140,y=32)
 	
 	#Settings Button
-	sph = PhotoImage(file = "extrafiles/setting3.png")
+	sph = PhotoImage(file = "extrafiles/images/setting.png")
 	sph = sph.subsample(2,2)
 	settingBtn = Button(bottomFrame1,image=sph,height=30,width=30, bg='#dfdfdf',borderwidth=0,activebackground="#dfdfdf",command=lambda: raise_frame(root2))
 	settingBtn.place(relx=1.0, y=30,x=-20, anchor="ne")	
 	
 	#Keyboard Button
-	kbph = PhotoImage(file = "extrafiles/keyboard.png")
+	kbph = PhotoImage(file = "extrafiles/images/keyboard.png")
 	kbph = kbph.subsample(2,2)
 	kbBtn = Button(bottomFrame1,image=kbph,height=30,width=30, bg='#dfdfdf',borderwidth=0,activebackground="#dfdfdf",)
 	kbBtn.place(x=25, y=30)
 
 	#User and Bot Icon
-	userIcon = PhotoImage(file="extrafiles/owner.png")
+	userIcon = PhotoImage(file="extrafiles/images/owner.png")
 	userIcon = userIcon.subsample(2,2)
-	botIcon = PhotoImage(file="extrafiles/assistant.png")
-	botIcon = botIcon.subsample(3,3)
+	botIcon = PhotoImage(file="extrafiles/images/assistant.png")
+	botIcon = botIcon.subsample(2,2)
 	
 
 	###########################
@@ -516,7 +563,7 @@ if __name__ == '__main__':
 	separator = ttk.Separator(root2, orient='horizontal')
 	separator.pack(fill=X)
 	#User Photo
-	img = PhotoImage(file = "extrafiles/user.png")
+	img = PhotoImage(file = "extrafiles/images/user.png")
 	img = img.subsample(2,2)
 	userPhoto = Label(root2, image=img, bg=background)
 	userPhoto.pack(pady=(20, 5))
@@ -566,7 +613,7 @@ if __name__ == '__main__':
 
 	chooseChatLbl = Label(settingsFrame, text='Chat Background', font=('Arial', 13), fg=textColor, bg=background)
 	chooseChatLbl.place(x=0,y=180)
-	cimg = PhotoImage(file = "extrafiles/colorchooser.png")
+	cimg = PhotoImage(file = "extrafiles/images/colorchooser.png")
 	cimg = cimg.subsample(3,3)
 	colorbar = Label(settingsFrame, bd=3, width=18, height=1, bg=chatBgColor)
 	colorbar.place(x=150, y=180)
@@ -577,7 +624,6 @@ if __name__ == '__main__':
 	backBtn.place(x=5, y=250)
 	clearFaceBtn.place(x=120, y=250)
 
-	raise_frame(root1)
 
 	try:
 		# pass
@@ -585,8 +631,10 @@ if __name__ == '__main__':
 	except:
 		pass
 	try:
-		# pass
-		Thread(target=webScrapping.dataUpdate).start()
+		pass
+		# Thread(target=webScrapping.dataUpdate).start()
 	except Exception as e:
 		print('System is Offline...')
+	
+	raise_frame(root1)
 	root.mainloop()
