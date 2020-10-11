@@ -158,7 +158,7 @@ if __name__ == '__main__':
 	########  MAIN SCREEN  #########
 	################################
 
-	image1 = Image.open('extrafiles/menu.jpg')
+	image1 = Image.open('extrafiles/images/menu.jpg')
 	defaultImg1 = ImageTk.PhotoImage(image1)
 
 	dataFrame1 = Frame(root1, bd=10, bg=background)
@@ -191,7 +191,7 @@ if __name__ == '__main__':
 	########  FACE ADD SCREEN  #######
 	##################################
 
-	image2 = Image.open('extrafiles/defaultFace2.jpg')
+	image2 = Image.open('extrafiles/images/defaultFace2.jpg')
 	defaultImg2 = ImageTk.PhotoImage(image2)
 
 	dataFrame2 = Frame(root2, bd=10, bg=background)
