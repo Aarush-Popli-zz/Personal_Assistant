@@ -78,7 +78,7 @@ def clickPhoto():
 
 	cam = cv2.VideoCapture(0)
 	_, frame = cam.read()
-	playsound.playsound('extrafiles/audios/photoclick2.mp3')
+	playsound.playsound('extrafiles/audios/photoclick.mp3')
 	imageName = 'Camera/Camera_'+str(datetime.now())[:19].replace(':', '_')+'.png'
 	cv2.imwrite(imageName, frame)
 	cam.release()
