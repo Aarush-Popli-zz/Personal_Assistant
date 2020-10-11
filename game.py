@@ -192,7 +192,7 @@ def rockPaperScissorWindow():
 	totalLabel = Label(root, text='0   |   0', font=('Arial Bold', 15), fg='#1F1F1F', bg='white')
 	totalLabel.pack()
 	#bottom image
-	img = Image.open('extrafiles/rockPaperScissor.jpg')
+	img = Image.open('extrafiles/ROCKPAPERSCISSOR/rockPaperScissor.jpg')
 	img = ImageTk.PhotoImage(img)
 	downLbl = Label(root, image=img)
 	downLbl.pack(side=BOTTOM)
