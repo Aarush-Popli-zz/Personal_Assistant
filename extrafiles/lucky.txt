@@ -1,0 +1,5 @@
+Who is your developer?;Roshan;Aarush;Nikhil;All;4
+What is the Capital of India?;Delhi;Mumbai;Lucknow;Patna;1
+World Tourism Day is celebrated on?;September 12;September 25;September 27;September 29;3
+When is the International Yoga Day celebrated?;June 21;March 21;April 22;May 31;1
+Who is the CEO of Google?;Satya Nadella;Sundar Pichai;Steve Job;Bill Gates;2
