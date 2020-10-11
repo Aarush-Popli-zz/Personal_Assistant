@@ -15,8 +15,8 @@ webbrowser
 
 ## Features / Tasks it can perform:  
 1. Game (eg, Rock Paper Scissor with GUI)  
-2. Search anything from wikipedia, images, google maps, etc.  
-3. Play video from YouTube.  
+2. Search anything from wikipedia, google maps, etc  
+3. Play video from YouTube  
 4. Email Sender  
 5. WhatsApp Message Sender  
 6. COVID Tracker  
@@ -27,5 +27,6 @@ webbrowser
 11. Capture Photo  
 12. Math Calculations  
 13. Timer  
+14. In-built search image display  
 
 ### To get started, run SECURITY.py file to register your face and to use it...
