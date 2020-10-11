@@ -18,7 +18,7 @@ def startTimer(query):
 	print("Timer Started")
 	sleep(time)
 	Thread(target=timer).start()
-	playsound.playsound("extrafiles/Timer.mp3")
+	playsound.playsound("extrafiles/audios/Timer.mp3")
 
 def timer():
 	root = Tk()
