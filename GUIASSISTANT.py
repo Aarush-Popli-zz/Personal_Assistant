@@ -194,6 +194,14 @@ def isContain(txt, lst):
 
 def main(text):
 
+		if isContain(text, ['battery status', 'battery percentage', 'system info']):
+			result = appControl.OSHandler(text)
+			if len(result)==2:
+				speak(result[0], True, True)
+				attachTOframe(result[1], True)
+			else:
+				speak(result, True, True)
+			return
 		if isContain(text, ['meaning', 'dictionary', 'definition']):
 			result = dictionary.translate(text)
 			speak(result[0], True, True)
@@ -224,8 +232,10 @@ def main(text):
 			return
 	
 		if 'whatsapp' in text:
+			speak('Sure Sir...', True, True)
+			speak('Whom do you want to send the message?')
+			# webScrapping.sendWhatsapp()
 			return
-			# webScrapping.sendWhatsapp
 
 		if 'email' in text:
 			speak('Whom do you want to send the email?', True, True)
@@ -641,8 +651,8 @@ if __name__ == '__main__':
 	except:
 		pass
 	try:
-		#pass
-		Thread(target=webScrapping.dataUpdate).start()
+		pass
+		# Thread(target=webScrapping.dataUpdate).start()
 	except Exception as e:
 		print('System is Offline...')
 	
