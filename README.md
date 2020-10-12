@@ -32,5 +32,22 @@ tkinter
 15. Smart Dictionary Search  
 16. OS Info  
 
-
+## Modules Installation:  
+  pip install SpeechRecognition  
+  pip install pyttsx3  
+  pip install playsound  
+  pip install Pillow  
+  pip install pyscreenshot  
+  pip install pynput  
+  pip install psutil  
+  pip install opencv-contrib-python  
+  pip install opencv  
+  pip install wikipedia  
+  pip install webbrowser  
+  pip install bs4  
+  pip install smtplib  
+  pip install youtube_search  
+  pip install wmi  
+  
+  
 ### To get started, run SECURITY.py file to register your face and to use it...
