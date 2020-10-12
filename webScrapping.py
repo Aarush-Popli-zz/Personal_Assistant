@@ -4,6 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 import threading
 import smtplib
+import urllib.request
+import os
 
 class COVID:
 	def __init__(self):
@@ -233,3 +235,28 @@ def email(rec_email=None, text="Hello, It's F.R.I.D.A.Y. here...", sub='F.R.I.D.
 	print("Sent")
 	s.quit()
 
+
+def downloadImage(query, n=4):
+	query = query.replace('images','')
+	query = query.replace('image','')
+	query = query.replace('search','')
+	query = query.replace('show','')
+	URL = "https://www.google.com/search?tbm=isch&q=" + query
+	result = requests.get(URL)
+	src = result.content
+
+	soup = BeautifulSoup(src, 'html.parser')
+	imgTags = soup.find_all('img', class_='t0fcAb')
+
+	if os.path.exists('Downloads')==False:
+		os.mkdir('Downloads')
+
+	count=0
+	for i in imgTags:
+		if count==n: break
+		try:
+			urllib.request.urlretrieve(i['src'], 'Downloads/' + str(count) + '.jpg')
+			count+=1
+			print('Downloaded', count)
+		except Exception as e:
+			raise e
