@@ -11,7 +11,8 @@ pynput
 pyscreenshot  
 smtplib  
 wikipedia  
-webbrowser  
+webbrowser 
+tkinter  
 
 ## Features / Tasks it can perform:  
 1. Game (eg, Rock Paper Scissor with GUI)  
@@ -28,5 +29,6 @@ webbrowser
 12. Math Calculations  
 13. Timer  
 14. In-built search image display  
+15. Smart Dictionary Search  
 
 ### To get started, run SECURITY.py file to register your face and to use it...
