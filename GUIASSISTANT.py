@@ -24,6 +24,7 @@ try:
 	from userHandler import UserData
 	import timer
 	from FACE_UNLOCKER import clickPhoto, viewPhoto
+	import dictionary
 except Exception as e:
 	raise e
 
@@ -193,6 +194,13 @@ def isContain(txt, lst):
 
 def main(text):
 
+		if isContain(text, ['meaning', 'dictionary', 'definition']):
+			result = dictionary.translate(text)
+			speak(result[0], True, True)
+			if result[1]=='': return
+			speak(result[1], True)
+			return
+
 		if 'click' in text and 'photo' in text:
 			speak('Sure Sir...', True, True)
 			clickPhoto()
@@ -253,7 +261,7 @@ def main(text):
 		if isContain(text, ['search', 'image', 'show the']):
 			if 'image' in text:
 				Thread(target=showImages, args=(text,)).start()
-				speak('Here are the results...', True, True)
+				speak('Here are the images...', True, True)
 				# showImages(text)
 				return
 			speak(webScrapping.googleSearch(text), True, True)
@@ -398,6 +406,8 @@ def voiceMedium():
 		if query == 'None': continue
 		else: main(query.lower())
 	appControl.Win_Opt('close')
+	# import sys
+	# sys.exit()
 
 def clearChatScreen():
 	for wid in chat_frame.winfo_children():
@@ -427,32 +437,32 @@ img0, img1, img2, img3 = None, None, None, None
 def showImages(query):
 	global img0, img1, img2, img3
 	webScrapping.downloadImage(query)
-
+	w, h = 150, 110
 	#Showing Images
 	imageContainer = Frame(chat_frame, bg='#EAEAEA')
 	imageContainer.pack(anchor='w')
 
 	img0 = Image.open('Downloads/0.jpg')
-	img0 = img0.resize((120,100), Image.ANTIALIAS)
+	img0 = img0.resize((w,h), Image.ANTIALIAS)
 	img0 = ImageTk.PhotoImage(img0)
 	
 	img1 = Image.open('Downloads/1.jpg')
-	img1 = img1.resize((120,100), Image.ANTIALIAS)
+	img1 = img1.resize((w,h), Image.ANTIALIAS)
 	img1 = ImageTk.PhotoImage(img1)
 	
 	img2 = Image.open('Downloads/2.jpg')
-	img2 = img2.resize((120,100), Image.ANTIALIAS)
+	img2 = img2.resize((w,h), Image.ANTIALIAS)
 	img2 = ImageTk.PhotoImage(img2)
 	
 	img3 = Image.open('Downloads/3.jpg')
-	img3 = img3.resize((120,100), Image.ANTIALIAS)
+	img3 = img3.resize((w,h), Image.ANTIALIAS)
 	img3 = ImageTk.PhotoImage(img3)
 
 	Label(imageContainer, image=img0, bg='#EAEAEA').grid(row=0, column=0)
 	Label(imageContainer, image=img1, bg='#EAEAEA').grid(row=0, column=1)
 	Label(imageContainer, image=img2, bg='#EAEAEA').grid(row=1, column=0)
 	Label(imageContainer, image=img3, bg='#EAEAEA').grid(row=1, column=1)
-	print('Done')
+	# print('Done')
 
 
 def sendEmail1():
@@ -631,8 +641,8 @@ if __name__ == '__main__':
 	except:
 		pass
 	try:
-		pass
-		# Thread(target=webScrapping.dataUpdate).start()
+		#pass
+		Thread(target=webScrapping.dataUpdate).start()
 	except Exception as e:
 		print('System is Offline...')
 	
