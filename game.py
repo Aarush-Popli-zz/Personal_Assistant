@@ -249,8 +249,8 @@ def play(gameName):
 		return result
 	'''
 	
-	else:
-		print("Game Not Available")
+	# else:
+		# print("Game Not Available")
 
 
 def showGames():
