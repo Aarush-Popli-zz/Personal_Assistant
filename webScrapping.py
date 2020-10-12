@@ -229,9 +229,9 @@ def whatsapp(phone_no='',message='',hours='',minutes=''):
 def email(rec_email=None, text="Hello, It's F.R.I.D.A.Y. here...", sub='F.R.I.D.A.Y.'):
 	s = smtplib.SMTP('smtp.gmail.com', 587)
 	s.starttls()
-	s.login("fridayatyourservice@gmail.com", "11FRIDAYatyourservice00")
+	s.login("Sender_Email", "Sender_Email_Password")
 	message = 'Subject: {}\n\n{}'.format(sub, text)
-	s.sendmail("fridayatyourservice@gmail.com", rec_email, message)
+	s.sendmail("Sender_Email", rec_email, message)
 	print("Sent")
 	s.quit()
 
