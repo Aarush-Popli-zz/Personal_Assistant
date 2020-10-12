@@ -11,7 +11,7 @@ pynput
 pyscreenshot  
 smtplib  
 wikipedia  
-webbrowser 
+webbrowser  
 tkinter  
 
 ## Features / Tasks it can perform:  
@@ -30,5 +30,7 @@ tkinter
 13. Timer  
 14. In-built search image display  
 15. Smart Dictionary Search  
+16. OS Info  
+
 
 ### To get started, run SECURITY.py file to register your face and to use it...
