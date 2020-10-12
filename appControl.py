@@ -3,6 +3,7 @@ import time
 import os
 import subprocess
 from pynput.keyboard import Key, Controller
+import psutil
 
 class SystemApps:
 	def __init__(self):
@@ -15,25 +16,6 @@ class SystemApps:
 		appName = appName.replace('calculator', 'calc')
 		try: subprocess.Popen('C:\\Windows\\System32\\'+appName[5:]+'.exe')
 		except: pass
-
-	def playMusic(self, text):
-		pass
-
-	def setAlarmTimer(self, time):
-		pass
-
-	def systemInfo(self):
-		import wmi
-		c = wmi.WMI()  
-		my_system_1 = c.Win32_LogicalDisk()[0]
-		my_system_2 = c.Win32_ComputerSystem()[0]
-		print("Total Disk Space:", round(int(my_system_1.Size)/(1024**3),2), "GB")
-		print("Free Disk Space:", round(int(my_system_1.Freespace)/(1024**3),2), "GB")
-		print("Manufacturer:", my_system_2.Manufacturer)
-		print("Model:", my_system_2. Model)
-		print("Owner:", my_system_2.PrimaryOwnerName)
-		print("Number of Processors:", my_system_2.NumberOfProcessors)
-		print("System Type:", my_system_2.SystemType)
 
 	def write(self, text):
 		text = text[5:]
@@ -195,10 +177,6 @@ def System_Opt(operation):
 		s.openApp(operation)
 	elif isContain(operation, ['music','video']):
 		s.playMusic(operation)
-	elif isContain(operation, ['timer','alarm']):
-		s.setAlarmTimer(operation)
-	elif isContain(operation, ['system', 'info']):
-		s.systemInfo()
 	else:
 		return
 
@@ -220,19 +198,37 @@ def full():
 
 
 def volumeControl(text):
-	if 'full' in text or 'max' in text:
-		full()
-
-	elif 'mute' in text or 'min' in text:
-		mute()
-
+	if 'full' in text or 'max' in text: full()
+	elif 'mute' in text or 'min' in text: mute()
 	elif 'incre' in text:
 		for i in range(5):
 			keyboard.press(Key.media_volume_up)
 			keyboard.release(Key.media_volume_up)
-
 	elif 'decre' in text:
 		for i in range(5):
 			keyboard.press(Key.media_volume_down)
 			keyboard.release(Key.media_volume_down)
 
+def systemInfo():
+	import wmi
+	c = wmi.WMI()  
+	my_system_1 = c.Win32_LogicalDisk()[0]
+	my_system_2 = c.Win32_ComputerSystem()[0]
+	print("Total Disk Space:", round(int(my_system_1.Size)/(1024**3),2), "GB")
+	print("Free Disk Space:", round(int(my_system_1.Freespace)/(1024**3),2), "GB")
+	print("Manufacturer:", my_system_2.Manufacturer)
+	print("Model:", my_system_2. Model)
+	print("Owner:", my_system_2.PrimaryOwnerName)
+	print("Number of Processors:", my_system_2.NumberOfProcessors)
+	print("System Type:", my_system_2.SystemType)
+
+def batteryInfo():
+	usage = str(psutil.cpu_percent(interval=0.1))
+	battery = psutil.sensors_battery()
+	return usage, battery.percent
+
+def OSHandler(query):
+	if isContain(query, ['system', 'info']):
+		systemInfo()
+	elif isContain(query, ['cpu', 'battery']):
+		return batteryInfo()
