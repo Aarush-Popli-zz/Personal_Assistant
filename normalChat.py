@@ -43,9 +43,7 @@ def isContain(text, lst):
 def chat(text):
 	dt = DateTime()
 	result = ""
-	if isContain(text, ["i'm","fine","thank you"]):
-		return "How may I help you Sir?"
-	elif isContain(text, ['good']):
+	if isContain(text, ['good']):
 		result = wishMe()		
 	elif isContain(text, ['time']):
 		result = "Current Time is: " + dt.currentTime()
@@ -53,3 +51,19 @@ def chat(text):
 		result = "Today is: " + dt.currentDate()
 
 	return result
+
+from difflib import get_close_matches
+import json
+from random import choice
+
+data = json.load(open('extrafiles/NormalChat.json', encoding='utf-8'))
+
+def reply(query):
+	if query in data:
+		response =  data[query]
+	else:
+		query = get_close_matches(query, data.keys(), n=2, cutoff=0.5)
+		if len(query)==0: return "None"
+		return choice(data[query[0]])
+
+	return choice(response)
