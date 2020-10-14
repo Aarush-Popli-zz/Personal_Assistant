@@ -7,6 +7,7 @@ import speech_recognition as sr
 import pyttsx3
 import time
 from pynput.keyboard import Key, Controller
+
 def closeWindow():
 	keyboard = Controller()
 	keyboard.press(Key.alt_l)
@@ -102,8 +103,10 @@ class RockPaperScissor:
 			el.destroy()
 		if 'won' in result:
 			Label(root, image=winImg).pack(pady=30)
-		else:
+		elif 'lose' in result:
 			Label(root, image=loseImg).pack(pady=30)
+		else:
+			Label(root, image=drawImg).pack(pady=30)
 		result += "You have won " +str(self.playerScore)+"/"+str(self.total_moves)+" matches."
 		Label(root, text='Score', font=('Arial Bold', 50), fg='#FE8A28', bg='white').pack()
 		Label(root, text=str(self.playerScore)+' / '+str(self.total_moves), font=('Arial Bold', 40), fg='#292D3E', bg='white').pack()
@@ -112,33 +115,7 @@ class RockPaperScissor:
 		closeWindow()
 		return
 
-class LuckyTrivia:
-	def __init__(self):
-		self.totalScore = 0
-
-	def nextQuestion(self, ques, options, correct):
-		print("\nQ:", ques)
-		for i in range(len(options)):
-			print(i+1,options[i])
-		
-		try:
-			ans = int(input("Ans: "))
-			if ans==correct:
-				print("You're Right!")
-				playsound.playsound('extrafiles/audios/wow.mp3')
-				self.totalScore += 1
-			else:
-				playsound.playsound('extrafiles/audios/suspense.mp3')	
-				print("You're Wrong!")
-				print("Correct Answer: ", options[correct-1])
-		except Exception as e:
-			print("e")
-
-	def showResult(self):
-		return "Your Total Score is " + str(self.totalScore)
-
-
-rockImg, paperImg, scissorImg, userchat, botchat, totalLabel, botMoveLBL, userMoveLBL, winImg, loseImg = None, None, None, None, None, None, None, None, None, None
+rockImg, paperImg, scissorImg, userchat, botchat, totalLabel, botMoveLBL, userMoveLBL, winImg, loseImg, drawImg = None, None, None, None, None, None, None, None, None, None, None
 def playRock():
 	rp = RockPaperScissor()
 	while True:
@@ -161,7 +138,7 @@ def playRock():
 
 
 def rockPaperScissorWindow():
-	global root, rockImg, paperImg, scissorImg, userchat, botchat, totalLabel, botMoveLBL, userMoveLBL, winImg, loseImg
+	global root, rockImg, paperImg, scissorImg, userchat, botchat, totalLabel, botMoveLBL, userMoveLBL, winImg, loseImg, drawImg
 	root = Tk()
 	root.title('Rock Paper Scissor')
 	# root.resizable(0,0)
@@ -170,7 +147,6 @@ def rockPaperScissorWindow():
 	s_width, s_height = root.winfo_screenwidth(), root.winfo_screenheight()
 	x, y = (s_width/2)-(w_width/2), (s_height/2)-(w_height/2)
 	root.geometry('%dx%d+%d+%d' % (w_width,w_height,x,y-30)) #center location of the screen
-	# root.geometry('400x650')
 	root.configure(bg='white')
 
 	rockImg = Image.open('extrafiles/ROCKPAPERSCISSOR/1.jpg')
@@ -187,6 +163,8 @@ def rockPaperScissorWindow():
 	winImg = ImageTk.PhotoImage(winImg)
 	loseImg = Image.open('extrafiles/ROCKPAPERSCISSOR/lose.jpg')
 	loseImg = ImageTk.PhotoImage(loseImg)
+	drawImg = Image.open('extrafiles/ROCKPAPERSCISSOR/draw.jpg')
+	drawImg = ImageTk.PhotoImage(drawImg)
 
 	toplbl = Label(root, text='Total Score', font=('Arial Bold', 20), fg='#FE8A28', bg='white').pack()
 	totalLabel = Label(root, text='0   |   0', font=('Arial Bold', 15), fg='#1F1F1F', bg='white')
@@ -237,22 +215,12 @@ def play(gameName):
 	elif isContain(gameName, ['rock','paper','scissor','first']):
 		rockPaperScissorWindow()
 		return
-
-	'''
-	elif isContain(gameName, ['lucky','trivia','second']):
-		l = LuckyTrivia()
-		with open("extrafiles/lucky.txt", "r") as file:
-			for line in file:
-				line = line.strip().split(';')
-				l.nextQuestion(line[0],list(line[1:-1]), int(line[-1]))
-		result = l.showResult()
-		return result
-	'''
 	
-	# else:
-		# print("Game Not Available")
+	else:
+		print("Game Not Available")
 
 
 def showGames():
 	return "1. Rock Paper Scissor\n2. Online Games"
 
+play('rock')
