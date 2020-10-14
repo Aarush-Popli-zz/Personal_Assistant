@@ -1,8 +1,8 @@
 #########################
 # GLOBAL VARIABLES USED #
 #########################
-rec_email = ""
-emailEntry = None
+rec_email, rec_phoneno = "", ""
+WAEMEntry = None
 chatBgColor = 'red'
 background = 'black'
 textColor = 'white'
@@ -136,10 +136,10 @@ except Exception as e:
 ##################################################################################################
 def attachTOframe(text,bot=False):
 	if bot:
-		botchat = Label(chat_frame,text=text, bg='#EAEAEA', fg='#494949', justify=LEFT, wraplength=250, font=('Arial Bold',12))
+		botchat = Label(chat_frame,text=text, bg='#EAEAEA', fg='#494949', justify=LEFT, wraplength=250, font=('Montserrat',12, 'bold'))
 		botchat.pack(anchor='w',ipadx=5,ipady=5,pady=5)
 	else:
-		userchat = Label(chat_frame, text=text, bg='#23AE79', fg='white', justify=RIGHT, wraplength=250, font=('Arial Bold',12))
+		userchat = Label(chat_frame, text=text, bg='#23AE79', fg='white', justify=RIGHT, wraplength=250, font=('Montserrat',12, 'bold'))
 		userchat.pack(anchor='e',ipadx=2,ipady=2,pady=5)
 
 def isHaving(text,list):
@@ -194,7 +194,7 @@ def isContain(txt, lst):
 
 def main(text):
 
-		if isContain(text, ['battery status', 'battery percentage', 'system info']):
+		if isContain(text, ['battery', 'battery', 'system info']):
 			result = appControl.OSHandler(text)
 			if len(result)==2:
 				speak(result[0], True, True)
@@ -202,7 +202,7 @@ def main(text):
 			else:
 				speak(result, True, True)
 			return
-		if isContain(text, ['meaning', 'dictionary', 'definition']):
+		if isContain(text, ['meaning', 'dictionary', 'definition', 'define']):
 			result = dictionary.translate(text)
 			speak(result[0], True, True)
 			if result[1]=='': return
@@ -233,14 +233,18 @@ def main(text):
 	
 		if 'whatsapp' in text:
 			speak('Sure Sir...', True, True)
-			speak('Whom do you want to send the message?')
-			# webScrapping.sendWhatsapp()
+			speak('Whom do you want to send the message?', True)
+			WAEMPOPUP("WhatsApp", "Phone Number")
+			attachTOframe(rec_phoneno)
+			speak('What is the message?', True)
+			message = record(False, False)
+			Thread(target=webScrapping.sendWhatsapp, args=(rec_phoneno, message,)).start()
+			speak("Message is on the way. Do not move away from the screen.")
 			return
 
 		if 'email' in text:
 			speak('Whom do you want to send the email?', True, True)
-			# Label(chat_frame, image=userIcon, bg=chatBgColor).pack(anchor='e',pady=0)
-			emailPOPUP()
+			WAEMPOPUP("Email", "E-mail Address")
 			attachTOframe(rec_email)
 			speak('What is the Subject?', True)
 			subject = record(False, False)
@@ -277,9 +281,21 @@ def main(text):
 			speak(webScrapping.googleSearch(text), True, True)
 			return
 			
-		if isContain(text, ['map']):
-			webScrapping.maps(text)
-			speak('Here you go...', True, True)
+		if isContain(text, ['map', 'direction']):
+			if "direction" in text:
+				speak('What is your starting location?', True, True)
+				startingPoint = record(False, False)
+				speak('Ok Sir, Where you want to go?', True)
+				destinationPoint = record(False, False)
+				speak('Ok Sir, Getting Directions...', True)
+				try:
+					distance = webScrapping.giveDirections(startingPoint, destinationPoint)
+					speak('You have to cover a distance of '+ distance, True)
+				except:
+					speak("I think location is not proper, Try Again!")
+			else:
+				webScrapping.maps(text)
+				speak('Here you go...', True, True)
 			return
 
 		if isContain(text, ['math', '+', '-', 'binary']):
@@ -299,11 +315,11 @@ def main(text):
 			headlines,headlineLinks = webScrapping.latestNews(2)
 			for head in headlines: speak(head, True)
 			speak('Do you want to read the full news?', True)
-			text = record(False)
+			text = record(False, False)
 			if isContain(text, ["no","don't"]):
 				speak('No Problem Sir')
 			else:
-				speak('Ok Sir, Opening browser...', True, True)
+				speak('Ok Sir, Opening browser...', True)
 				webScrapping.openWebsite('https://indianexpress.com/latest-news/')
 				speak("You can now read the full news from this website.")
 			return
@@ -335,32 +351,8 @@ def main(text):
 			return
 
 		if isContain(text, ['wiki', 'who is']):
-			speak('Searching Wikipedia...', True, True)
+			speak('Searching...', True, True)
 			speak(webScrapping.wikiResult(text), True)
-			return
-
-		
-		if isContain(text, ['voice']):
-			global voice_id
-			try:
-				if 'female' in text: voice_id = 0
-				elif 'male' in text: voice_id = 1
-				else:
-					if voice_id==0: voice_id=1
-					else: voice_id=0
-				engine.setProperty('voice', voices[voice_id].id)
-				ChangeSettings(True)
-				speak("Hello Sir, I have changed my voice. How may I help you?", True, True)
-				assVoiceOption.current(voice_id)
-			except Exception as e:
-				print(e)
-			return
-		
-		if isContain(text, ['hello','good','how are you','hai','morning','evening','noon']):
-			if isContain(text, ["good"]):
-				speak(normalChat.chat("good"), True, True)
-				return
-			speak('Hello Sir, How are you ?', True, True)
 			return
 		
 		if isContain(text, ['game']):
@@ -386,7 +378,7 @@ def main(text):
 			speak(game.play(text), True)
 			return
 		
-		if isContain(text, ['time','date','day','today','month']):
+		if isContain(text, ['time','date']):
 			speak(normalChat.chat(text), True, True)
 			return
 
@@ -394,16 +386,31 @@ def main(text):
 			speak('Your name is, ' + ownerName, True, True)
 			return
 
-		if 'thank you' in text:
-			speak("You're Welcome Sir !", True, True)
+		if isContain(text, ['voice']):
+			global voice_id
+			try:
+				if 'female' in text: voice_id = 0
+				elif 'male' in text: voice_id = 1
+				else:
+					if voice_id==0: voice_id=1
+					else: voice_id=0
+				engine.setProperty('voice', voices[voice_id].id)
+				ChangeSettings(True)
+				speak("Hello Sir, I have changed my voice. How may I help you?", True, True)
+				assVoiceOption.current(voice_id)
+			except Exception as e:
+				print(e)
 			return
 
-		if isContain(text, ['your name', 'who are you']):
-			speak("I'm your Personal Assistant. You can call me by any name.")
+		if isContain(text, ['morning','evening','noon']) and 'good' in text:
+			speak(normalChat.chat("good"), True, True)
 			return
-			
-		speak("Here's what I found on the web... ", True, True)
-		webScrapping.googleSearch(text)
+		
+		result = normalChat.reply(text)
+		if result != "None": speak(result, True, True)
+		else:
+			speak("Here's what I found on the web... ", True, True)
+			webScrapping.googleSearch(text)
 		
 
 
@@ -452,57 +459,57 @@ def showImages(query):
 	imageContainer = Frame(chat_frame, bg='#EAEAEA')
 	imageContainer.pack(anchor='w')
 
+	#Opening
 	img0 = Image.open('Downloads/0.jpg')
-	img0 = img0.resize((w,h), Image.ANTIALIAS)
-	img0 = ImageTk.PhotoImage(img0)
-	
 	img1 = Image.open('Downloads/1.jpg')
-	img1 = img1.resize((w,h), Image.ANTIALIAS)
-	img1 = ImageTk.PhotoImage(img1)
-	
 	img2 = Image.open('Downloads/2.jpg')
-	img2 = img2.resize((w,h), Image.ANTIALIAS)
-	img2 = ImageTk.PhotoImage(img2)
-	
 	img3 = Image.open('Downloads/3.jpg')
+	#Resizing
+	img0 = img0.resize((w,h), Image.ANTIALIAS)
+	img1 = img1.resize((w,h), Image.ANTIALIAS)
+	img2 = img2.resize((w,h), Image.ANTIALIAS)
 	img3 = img3.resize((w,h), Image.ANTIALIAS)
-	img3 = ImageTk.PhotoImage(img3)
 
+	img0 = ImageTk.PhotoImage(img0)
+	img1 = ImageTk.PhotoImage(img1)
+	img2 = ImageTk.PhotoImage(img2)
+	img3 = ImageTk.PhotoImage(img3)
+	#Displaying
 	Label(imageContainer, image=img0, bg='#EAEAEA').grid(row=0, column=0)
 	Label(imageContainer, image=img1, bg='#EAEAEA').grid(row=0, column=1)
 	Label(imageContainer, image=img2, bg='#EAEAEA').grid(row=1, column=0)
 	Label(imageContainer, image=img3, bg='#EAEAEA').grid(row=1, column=1)
-	# print('Done')
 
-
-def sendEmail1():
-	global rec_email
-	rec_email = emailEntry.get()
-	emailEntry.delete(0, END)
+#WAEM - WhatsApp Email
+def sendWAEM():
+	global rec_phoneno, rec_email
+	data = WAEMEntry.get()
+	rec_email, rec_phoneno = data, data
+	WAEMEntry.delete(0, END)
 	appControl.Win_Opt('close')
+def send(e):
+	sendWAEM()
 
-def sendEmail2(e):
-	sendEmail1()
-
-def emailPOPUP():
-	global emailEntry
-	emailroot = Tk()
-	emailroot.title('Email Service')
-	emailroot.attributes('-toolwindow', True)
-	emailroot.configure(bg='white')
+def WAEMPOPUP(Service='None', rec='Reciever'):
+	global WAEMEntry
+	PopUProot = Tk()
+	PopUProot.title(f'{Service} Service')
+	PopUProot.attributes('-toolwindow', True)
+	PopUProot.configure(bg='white')
 	w_width, w_height = 410, 200
-	s_width, s_height = emailroot.winfo_screenwidth(), emailroot.winfo_screenheight()
+	s_width, s_height = PopUProot.winfo_screenwidth(), PopUProot.winfo_screenheight()
 	x, y = (s_width/2)-(w_width/2), (s_height/2)-(w_height/2)
-	emailroot.geometry('%dx%d+%d+%d' % (w_width,w_height,x,y-30)) #center location of the screen
-	Label(emailroot, text='Reciever Email Address', font=('Arial', 16), bg='white').pack(pady=(20, 10))
-	emailEntry = Entry(emailroot, bd=10, relief=FLAT, font=('Arial', 12), bg='#DCDCDC', width=30)
-	emailEntry.pack()
-	emailEntry.focus()
+	PopUProot.geometry('%dx%d+%d+%d' % (w_width,w_height,x,y-30)) #center location of the screen
+	Label(PopUProot, text=f'Reciever {rec}', font=('Arial', 16), bg='white').pack(pady=(20, 10))
+	WAEMEntry = Entry(PopUProot, bd=10, relief=FLAT, font=('Arial', 12), bg='#DCDCDC', width=30)
+	WAEMEntry.pack()
+	WAEMEntry.focus()
 
-	SendBtn = Button(emailroot, text='Send', font=('Arial', 12), relief=FLAT, bg='#14A769', fg='white', command=sendEmail1)
+	SendBtn = Button(PopUProot, text='Send', font=('Arial', 12), relief=FLAT, bg='#14A769', fg='white', command=sendWAEM)
 	SendBtn.pack(pady=20, ipadx=10)
-	emailroot.bind('<Return>', sendEmail2)
-	emailroot.mainloop()
+	PopUProot.bind('<Return>', send)
+	PopUProot.mainloop()
+
 
 def getChatColor():
 	global chatBgColor
