@@ -6,15 +6,16 @@ import threading
 import smtplib
 import urllib.request
 import os
-
+from geopy.geocoders import Nominatim
+from geopy.distance import great_circle
 class COVID:
 	def __init__(self):
-		self.total = ''
-		self.deaths = ''
-		self.recovered = ''
-		self.totalIndia = ''
-		self.deathsIndia = ''
-		self.recoveredIndia = ''
+		self.total = 'Not Available'
+		self.deaths = 'Not Available'
+		self.recovered = 'Not Available'
+		self.totalIndia = 'Not Available'
+		self.deathsIndia = 'Not Available'
+		self.recoveredIndia = 'Not Available'
 
 	def covidUpdate(self):
 		URL = 'https://www.worldometers.info/coronavirus/'
@@ -107,7 +108,7 @@ class WEATHER:
 			break
 
 		spans = soup.find_all('span')
-		
+		#currently in Lucknow it's 29 with Haze
 		for span in spans:
 			try:
 				if span['data-testid']=="TemperatureValue":
@@ -148,6 +149,26 @@ def maps(text):
 	text = text.replace('google', '')
 	openWebsite('https://www.google.com/maps/place/'+text)
 
+def giveDirections(startingPoint, destinationPoint):
+
+	geolocator = Nominatim(user_agent='assistant')
+	if 'current' in startingPoint:
+		res = requests.get("https://ipinfo.io/")
+		data = res.json()
+		startinglocation = geolocator.reverse(data['loc'])
+	else:
+		startinglocation = geolocator.geocode(startingPoint)
+
+	destinationlocation = geolocator.geocode(destinationPoint)
+	startingPoint = startinglocation.address.replace(' ', '+')
+	destinationPoint = destinationlocation.address.replace(' ', '+')
+
+	openWebsite('https://www.google.co.in/maps/dir/'+startingPoint+'/'+destinationPoint+'/')
+
+	startinglocationCoordinate = (startinglocation.latitude, startinglocation.longitude)
+	destinationlocationCoordinate = (destinationlocation.latitude, destinationlocation.longitude)
+	total_distance = great_circle(startinglocationCoordinate, destinationlocationCoordinate).km #.mile
+	return str(round(total_distance, 2)) + 'KM'
 
 def openWebsite(url='https://www.google.com/'):
 	webbrowser.open(url)
@@ -222,16 +243,22 @@ def googleSearch(query):
 	webbrowser.open("https://www.google.com/search?q=" + query)
 	return "Here you go..."
 
-def whatsapp(phone_no='',message='',hours='',minutes=''):
-	phone_no = '+91' + phone_no
+def sendWhatsapp(phone_no='',message=''):
+	phone_no = '+91' + str(phone_no)
 	webbrowser.open('https://web.whatsapp.com/send?phone='+phone_no+'&text='+message)
+	import time
+	from pynput.keyboard import Key, Controller
+	time.sleep(10)
+	k = Controller()
+	k.press(Key.enter)
 
 def email(rec_email=None, text="Hello, It's F.R.I.D.A.Y. here...", sub='F.R.I.D.A.Y.'):
+	if '@gmail.com' not in rec_email: return
 	s = smtplib.SMTP('smtp.gmail.com', 587)
 	s.starttls()
-	s.login("Sender_Email", "Sender_Email_Password")
+	s.login("fridayatyourservice@gmail.com", "11FRIDAYatyourservice00")
 	message = 'Subject: {}\n\n{}'.format(sub, text)
-	s.sendmail("Sender_Email", rec_email, message)
+	s.sendmail("fridayatyourservice@gmail.com", rec_email, message)
 	print("Sent")
 	s.quit()
 
