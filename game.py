@@ -222,5 +222,3 @@ def play(gameName):
 
 def showGames():
 	return "1. Rock Paper Scissor\n2. Online Games"
-
-play('rock')
