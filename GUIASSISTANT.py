@@ -1,44 +1,40 @@
 #########################
-# GLOBAL VARIABLES USED #
+# GLOBAL VARIABLES USED # web development
 #########################
 rec_email, rec_phoneno = "", ""
 WAEMEntry = None
-chatBgColor = 'red'
-background = 'black'
-textColor = 'white'
 ai_name = 'jarvis'.lower()
 WAKE_COMMANDS = ['hello','hi','hey',ai_name,'hai','activate','google']
 EXIT_COMMANDS = ['bye','exit','quit','shutdown']
 WelcomeSpeech = "Hello, I'm your Personal Assistant. You can ask me any thing, and I will perform the task for you."
-voice_id = 0 #male
-ass_volume = 1
-ass_voiceRate = 200
 
-'''User Created Modules'''
+chatBgColor = '#12232e'
+background = 'white'
+textColor = 'black'
+AITaskStatusLblBG = '#14A769'
+KCS_IMG = 0 #light, 1 for dark
+voice_id = 0 #female
+ass_volume = 1 #max volume
+ass_voiceRate = 200 #normal voice rate
+
+####################################### IMPORTING MODULES ###########################################
+""" User Created Modules """
 try:
 	import normalChat
+	import math_function
 	import appControl
 	import webScrapping
 	import game
-	import math_function
 	from userHandler import UserData
 	import timer
 	from FACE_UNLOCKER import clickPhoto, viewPhoto
 	import dictionary
+	import ToDo
+	import fileHandler
 except Exception as e:
 	raise e
 
-##############################################
-try:
-	user = UserData()
-	user.extractData()
-	ownerName = user.getName().split()[0]
-except Exception as e:
-	print("You're not Registered Yet !\nRun SECURITY.py file to register your face.")
-	raise SystemExit
-###############################################
-
-'''System Modules'''
+""" System Modules """
 try:
 	import os
 	import speech_recognition as sr
@@ -53,40 +49,64 @@ try:
 except Exception as e:
 	print(e)
 
+########################################## LOGIN CHECK ##############################################
+try:
+	user = UserData()
+	user.extractData()
+	ownerName = user.getName().split()[0]
+except Exception as e:
+	print("You're not Registered Yet !\nRun SECURITY.py file to register your face.")
+	raise SystemExit
 
-########################################################################################################
+
+########################################## BOOT UP WINDOW ###########################################
 def ChangeSettings(write=False):
-	global background, textColor, chatBgColor, voice_id, ass_volume, ass_voiceRate
+	import pickle
+	global background, textColor, chatBgColor, voice_id, ass_volume, ass_voiceRate, AITaskStatusLblBG, KCS_IMG
+	setting = {'background': background,
+				'textColor': textColor,
+				'chatBgColor': chatBgColor,
+				'AITaskStatusLblBG': AITaskStatusLblBG,
+				'KCS_IMG': KCS_IMG,
+				'voice_id': voice_id,
+				'ass_volume': ass_volume,
+				'ass_voiceRate': ass_voiceRate
+			}
 	if write:
-		with open('userData/settings.dat', 'w') as file:
-			file.write(str(background)+'\n')
-			file.write(str(textColor)+'\n')
-			file.write(str(chatBgColor)+'\n')
-			file.write(str(voice_id)+'\n')
-			file.write(str(ass_volume)+'\n')
-			file.write(str(ass_voiceRate)+'\n')
+		with open('userData/settings.pck', 'wb') as file:
+			pickle.dump(setting, file)
 		return
 	try:
-		with open('userData/settings.dat', 'r') as file:
-			background = file.readline().strip()
-			textColor = file.readline().strip()
-			chatBgColor = file.readline().strip()
-			voice_id = int(file.readline().strip())
-			ass_volume = float(file.readline().strip())
-			ass_voiceRate = int(file.readline().strip())
+		with open('userData/settings.pck', 'rb') as file:
+			loadSettings = pickle.load(file)
+			background = loadSettings['background']
+			textColor = loadSettings['textColor']
+			chatBgColor = loadSettings['chatBgColor']
+			AITaskStatusLblBG = loadSettings['AITaskStatusLblBG']
+			KCS_IMG = loadSettings['KCS_IMG']
+			voice_id = loadSettings['voice_id']
+			ass_volume = loadSettings['ass_volume']
+			ass_voiceRate = loadSettings['ass_voiceRate']
 	except Exception as e:
 		pass
 
-if os.path.exists('userData/settings.dat')==False:
+if os.path.exists('userData/settings.pck')==False:
 	ChangeSettings(True)
 
-
 def changeTheme():
-	global background, textColor
+	global background, textColor, AITaskStatusLblBG, KCS_IMG
 	if themeValue.get()==1:
-		background, textColor = "black", "white"
+		background, textColor, AITaskStatusLblBG, KCS_IMG = "#203647", "white", "#203647",1
+		cbl['image'] = cblDarkImg
+		kbBtn['image'] = kbphDark
+		settingBtn['image'] = sphDark
+		AITaskStatusLbl['bg'] = AITaskStatusLblBG
 	else:
-		background, textColor = "white", "black"
+		background, textColor, AITaskStatusLblBG, KCS_IMG= "white", "black", "#14A769", 0
+		cbl['image'] = cblLightImg
+		kbBtn['image'] = kbphLight
+		settingBtn['image'] = sphLight
+		AITaskStatusLbl['bg'] = AITaskStatusLblBG
 
 	root['bg'], root2['bg'] = background, background
 	settingsFrame['bg'] = background
@@ -123,8 +143,7 @@ def changeVoiceRate(e):
 
 ChangeSettings()
 
-######################################################################################################
-
+############################################ SET UP VOICE ###########################################
 try:
 	engine = pyttsx3.init()
 	voices = engine.getProperty('voices')
@@ -133,25 +152,8 @@ try:
 except Exception as e:
 	print(e)
 
-##################################################################################################
-def attachTOframe(text,bot=False):
-	if bot:
-		botchat = Label(chat_frame,text=text, bg='#EAEAEA', fg='#494949', justify=LEFT, wraplength=250, font=('Montserrat',12, 'bold'))
-		botchat.pack(anchor='w',ipadx=5,ipady=5,pady=5)
-	else:
-		userchat = Label(chat_frame, text=text, bg='#23AE79', fg='white', justify=RIGHT, wraplength=250, font=('Montserrat',12, 'bold'))
-		userchat.pack(anchor='e',ipadx=2,ipady=2,pady=5)
 
-def isHaving(text,list):
-	for word in list:
-		if word in text:
-			return True
-	return False
-
-def raise_frame(frame):
-	frame.tkraise()
-
-############################################################################################################
+####################################### SET UP TEXT TO SPEECH #######################################
 def speak(text, display=False, icon=False):
 	AITaskStatusLbl['text'] = 'Speaking...'
 	if icon: Label(chat_frame, image=botIcon, bg=chatBgColor).pack(anchor='w',pady=0)
@@ -160,6 +162,7 @@ def speak(text, display=False, icon=False):
 	engine.say(text)
 	engine.runAndWait()
 
+####################################### SET UP SPEECH TO TEXT #######################################
 def record(clearChat=True, iconDisplay=True):
 	print('\nListening...')
 	AITaskStatusLbl['text'] = 'Listening...'
@@ -186,6 +189,17 @@ def record(clearChat=True, iconDisplay=True):
 			return 'None'
 	return said.lower()
 
+def voiceMedium():
+	while True:
+		query = record()
+		if isContain(query, EXIT_COMMANDS):
+			speak('Shutting down the System. Good Bye Sir!', True, True)
+			break
+		if query == 'None': continue
+		else: main(query.lower())
+	appControl.Win_Opt('close')
+
+###################################### TASK/COMMAND HANDLER #########################################
 def isContain(txt, lst):
 	for word in lst:
 		if word in txt:
@@ -193,6 +207,42 @@ def isContain(txt, lst):
 	return False
 
 def main(text):
+
+		if "project" in text:
+			if isContain(text, ['make', 'create']):
+				speak("What do you want to give the project name ?", True, True)
+				projectName = record(False, False)
+				speak(fileHandler.CreateHTMLProject(projectName.capitalize()), True)
+				return
+
+		if "create" in text and "file" in text:
+			speak(fileHandler.createFile(text), True, True)
+			return
+
+		if "translate" in text:
+			speak("What do you want to translate?", True, True)
+			sentence = record(False, False)
+			speak("Which langauage to translate ?", True)
+			langauage = record(False, False)
+			result = normalChat.lang_translate(sentence, langauage)
+			if result=="None": speak("This langauage doesn't exists")
+			else:
+				speak(f"In {langauage.capitalize()} you would say:", True)
+				speak(result.text, True)
+			return
+
+		if 'list' in text:
+			if isContain(text, ['add', 'create', 'make']):
+				speak("What do you want to add?", True, True)
+				item = record(False, False)
+				ToDo.toDoList(item)
+				speak("Alright, I added to your list", True)
+				return
+			if isContain(text, ['show', 'my list']):
+				items = ToDo.showtoDoList()
+				attachTOframe('\n'.join(items), True)
+				speak(items[0])
+				return
 
 		if isContain(text, ['battery', 'battery', 'system info']):
 			result = appControl.OSHandler(text)
@@ -209,7 +259,7 @@ def main(text):
 			speak(result[1], True)
 			return
 
-		if 'click' in text and 'photo' in text:
+		if 'selfie' in text or ('click' in text and 'photo' in text):
 			speak('Sure Sir...', True, True)
 			clickPhoto()
 			speak('Do you want to view your clicked photo?', True)
@@ -276,7 +326,6 @@ def main(text):
 			if 'image' in text:
 				Thread(target=showImages, args=(text,)).start()
 				speak('Here are the images...', True, True)
-				# showImages(text)
 				return
 			speak(webScrapping.googleSearch(text), True, True)
 			return
@@ -413,33 +462,7 @@ def main(text):
 			webScrapping.googleSearch(text)
 		
 
-
-def voiceMedium():
-	while True:
-		query = record()
-		if isContain(query, EXIT_COMMANDS):
-			speak('Shutting down the System. Good Bye Sir!', True, True)
-			break
-		if query == 'None': continue
-		else: main(query.lower())
-	appControl.Win_Opt('close')
-	# import sys
-	# sys.exit()
-
-def clearChatScreen():
-	for wid in chat_frame.winfo_children():
-		wid.destroy()
-
-'''
-def enter(event):
-	text = userField.get()
-	userField.delete(0, END)
-	if text!="":
-		attachTOframe(text)
-		if 'clear' in text:
-			clearChatScreen()
-		else: main(text)
-'''
+##################################### DELETE USER ACCOUNT #########################################
 def deleteUserData():
 	result = messagebox.askquestion('Alert', 'Are you sure you want to delete your Face Data ?')
 	if result=='no': return
@@ -450,6 +473,25 @@ def deleteUserData():
 						#####################
 						####### GUI #########
 						#####################
+
+############ ATTACHING BOT/USER CHAT ON CHAT SCREEN ###########
+def attachTOframe(text,bot=False):
+	if bot:
+		botchat = Label(chat_frame,text=text, bg='#EAEAEA', fg='#494949', justify=LEFT, wraplength=250, font=('Montserrat',12, 'bold'))
+		botchat.pack(anchor='w',ipadx=5,ipady=5,pady=5)
+	else:
+		userchat = Label(chat_frame, text=text, bg='#23AE79', fg='white', justify=RIGHT, wraplength=250, font=('Montserrat',12, 'bold'))
+		userchat.pack(anchor='e',ipadx=2,ipady=2,pady=5)
+
+def clearChatScreen():
+	for wid in chat_frame.winfo_children():
+		wid.destroy()
+
+### SWITCHING BETWEEN FRAMES ###
+def raise_frame(frame):
+	frame.tkraise()
+
+################# SHOWING DOWNLOADED IMAGES ###############
 img0, img1, img2, img3 = None, None, None, None
 def showImages(query):
 	global img0, img1, img2, img3
@@ -480,7 +522,7 @@ def showImages(query):
 	Label(imageContainer, image=img2, bg='#EAEAEA').grid(row=1, column=0)
 	Label(imageContainer, image=img3, bg='#EAEAEA').grid(row=1, column=1)
 
-#WAEM - WhatsApp Email
+############################# WAEM - WhatsApp Email ##################################
 def sendWAEM():
 	global rec_phoneno, rec_email
 	data = WAEMEntry.get()
@@ -510,7 +552,7 @@ def WAEMPOPUP(Service='None', rec='Reciever'):
 	PopUProot.bind('<Return>', send)
 	PopUProot.mainloop()
 
-
+######################## CHANGING CHAT BACKGROUND COLOR #########################
 def getChatColor():
 	global chatBgColor
 	myColor = colorchooser.askcolor()
@@ -521,11 +563,26 @@ def getChatColor():
 	root1['bg'] = chatBgColor
 	ChangeSettings(True)
 
+chatMode = 1
+def changeChatMode():
+	global chatMode
+	if chatMode==1:
+		VoiceModeFrame.pack_forget()
+		TextModeFrame.pack(fill=BOTH)
+		chatMode=0
+	else:
+		TextModeFrame.pack_forget()
+		VoiceModeFrame.pack(fill=BOTH)
+		chatMode=1
+############################################## MAIN GUI #############################################
+
 if __name__ == '__main__':
 	# ChangeSettings()
 
 	root = Tk()
-	root.title('ASSISTANT')
+	root.title('F.R.I.D.A.Y')
+	rootIcon = PhotoImage(file='extrafiles/images/assistant2.png')
+	root.iconphoto(False, rootIcon)
 	w_width, w_height = 400, 650
 	s_width, s_height = root.winfo_screenwidth(), root.winfo_screenheight()
 	x, y = (s_width/2)-(w_width/2), (s_height/2)-(w_height/2)
@@ -551,33 +608,66 @@ if __name__ == '__main__':
 
 	# userField = Entry(root1, bd=10, font=('Arial',15),fg=boxFG,width=35,relief=FLAT, bg=boxBG,insertbackground="black")
 	# userField.focus_set()
-	# userField.pack(side=BOTTOM)
+	# userField.pack(pady)
 	# root.bind('<Return>', enter)
 
 	bottomFrame1 = Frame(root1, bg='#dfdfdf', height=100)
 	bottomFrame1.pack(fill=X, side=BOTTOM)
+	VoiceModeFrame = Frame(bottomFrame1, bg='#dfdfdf')
+	VoiceModeFrame.pack(fill=BOTH)
+	TextModeFrame = Frame(bottomFrame1, bg='#dfdfdf')
+	TextModeFrame.pack(fill=BOTH)
 
-	cbl = PhotoImage(file='extrafiles/images/centralButton.png')
-	Label(bottomFrame1, fg='white', image=cbl, bg='#dfdfdf').pack(pady=17)
-	AITaskStatusLbl = Label(bottomFrame1, text='    Offline', fg='white', bg='#14A769', font=('Arial', 16))
+	# VoiceModeFrame.pack_forget()
+	# TextModeFrame.pack_forget()
+
+	cblLightImg = PhotoImage(file='extrafiles/images/centralButton.png')
+	cblDarkImg = PhotoImage(file='extrafiles/images/centralButton1.png')
+	if KCS_IMG==1: cblimage=cblDarkImg
+	else: cblimage=cblLightImg
+	cbl = Label(VoiceModeFrame, fg='white', image=cblimage, bg='#dfdfdf')
+	cbl.pack(pady=17)
+	AITaskStatusLbl = Label(VoiceModeFrame, text='    Offline', fg='white', bg=AITaskStatusLblBG, font=('montserrat', 16))
 	AITaskStatusLbl.place(x=140,y=32)
 	
 	#Settings Button
-	sph = PhotoImage(file = "extrafiles/images/setting.png")
-	sph = sph.subsample(2,2)
-	settingBtn = Button(bottomFrame1,image=sph,height=30,width=30, bg='#dfdfdf',borderwidth=0,activebackground="#dfdfdf",command=lambda: raise_frame(root2))
+	sphLight = PhotoImage(file = "extrafiles/images/setting.png")
+	sphLight = sphLight.subsample(2,2)
+	sphDark = PhotoImage(file = "extrafiles/images/setting1.png")
+	sphDark = sphDark.subsample(2,2)
+	if KCS_IMG==1: sphimage=sphDark
+	else: sphimage=sphLight
+	settingBtn = Button(VoiceModeFrame,image=sphimage,height=30,width=30, bg='#dfdfdf',borderwidth=0,activebackground="#dfdfdf",command=lambda: raise_frame(root2))
 	settingBtn.place(relx=1.0, y=30,x=-20, anchor="ne")	
 	
 	#Keyboard Button
-	kbph = PhotoImage(file = "extrafiles/images/keyboard.png")
-	kbph = kbph.subsample(2,2)
-	kbBtn = Button(bottomFrame1,image=kbph,height=30,width=30, bg='#dfdfdf',borderwidth=0,activebackground="#dfdfdf",)
+	kbphLight = PhotoImage(file = "extrafiles/images/keyboard.png")
+	kbphLight = kbphLight.subsample(2,2)
+	kbphDark = PhotoImage(file = "extrafiles/images/keyboard1.png")
+	kbphDark = kbphDark.subsample(2,2)
+	if KCS_IMG==1: kbphimage=kbphDark
+	else: kbphimage=kbphLight
+	kbBtn = Button(VoiceModeFrame,image=kbphimage,height=30,width=30, bg='#dfdfdf',borderwidth=0,activebackground="#dfdfdf", command=changeChatMode)
 	kbBtn.place(x=25, y=30)
 
+	#Mic
+	micImg = PhotoImage(file = "extrafiles/images/mic.png")
+	micImg = micImg.subsample(2,2)
+	micBtn = Button(TextModeFrame,image=micImg,height=30,width=30, bg='#dfdfdf',borderwidth=0,activebackground="#dfdfdf", command=changeChatMode)
+	micBtn.place(relx=1.0, y=30,x=-20, anchor="ne")	
+	#Text Field
+	TextFieldImg = PhotoImage(file='extrafiles/images/textField.png')
+	UserFieldLBL = Label(TextModeFrame, fg='white', image=TextFieldImg, bg='#dfdfdf')
+	UserFieldLBL.pack(pady=17, side=LEFT, padx=10)
+	UserField = Entry(TextModeFrame, fg='white', bg='#203647', font=('Montserrat', 16), bd=6, width=22, relief=FLAT)
+	UserField.place(x=20, y=30)
+	UserField.focus()
+	UserField.insert(0, "Ask me anything...")
+	
 	#User and Bot Icon
 	userIcon = PhotoImage(file="extrafiles/images/owner.png")
 	userIcon = userIcon.subsample(2,2)
-	botIcon = PhotoImage(file="extrafiles/images/assistant.png")
+	botIcon = PhotoImage(file="extrafiles/images/assistant2.png")
 	botIcon = botIcon.subsample(2,2)
 	
 
@@ -590,7 +680,7 @@ if __name__ == '__main__':
 	separator = ttk.Separator(root2, orient='horizontal')
 	separator.pack(fill=X)
 	#User Photo
-	img = PhotoImage(file = "extrafiles/images/user.png")
+	img = PhotoImage(file = "extrafiles/images/user2.png")
 	img = img.subsample(2,2)
 	userPhoto = Label(root2, image=img, bg=background)
 	userPhoto.pack(pady=(20, 5))
