@@ -5,7 +5,7 @@ import subprocess
 from pynput.keyboard import Key, Controller
 import psutil
 
-class SystemApps:
+class SystemTasks:
 	def __init__(self):
 		self.keyboard = Controller()
 
@@ -162,7 +162,7 @@ def Tab_Opt(operation):
 
 
 def System_Opt(operation):
-	s = SystemApps()
+	s = SystemTasks()
 	if 'delete' in operation:
 		s.delete()
 	elif 'save' in operation:
@@ -178,6 +178,7 @@ def System_Opt(operation):
 	elif isContain(operation, ['music','video']):
 		s.playMusic(operation)
 	else:
+		open_website(operation)
 		return
 
 
@@ -236,3 +237,21 @@ def OSHandler(query):
 		return ['Here is your System Information...', '\n'.join(systemInfo())]
 	elif isContain(query, ['cpu', 'battery']):
 		return batteryInfo()
+
+
+from difflib import get_close_matches
+import json
+from random import choice
+import webbrowser
+
+data = json.load(open('extrafiles/websites.json', encoding='utf-8'))
+
+def open_website(query):
+	query = query.replace('open','')
+	if query in data:
+		response = data[query]
+	else:
+		query = get_close_matches(query, data.keys(), n=2, cutoff=0.5)
+		if len(query)==0: return "None"
+		response = choice(data[query[0]])
+	webbrowser.open(response)
