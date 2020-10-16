@@ -1,5 +1,5 @@
 #########################
-# GLOBAL VARIABLES USED # web development
+# GLOBAL VARIABLES USED #
 #########################
 rec_email, rec_phoneno = "", ""
 WAEMEntry = None
@@ -7,6 +7,10 @@ ai_name = 'jarvis'.lower()
 WAKE_COMMANDS = ['hello','hi','hey',ai_name,'hai','activate','google']
 EXIT_COMMANDS = ['bye','exit','quit','shutdown']
 WelcomeSpeech = "Hello, I'm your Personal Assistant. You can ask me any thing, and I will perform the task for you."
+
+botChatTextBg = "#EAEAEA"
+botChatText = "#494949"
+userChatTextBg = "#23AE79"
 
 chatBgColor = '#12232e'
 background = 'white'
@@ -62,12 +66,15 @@ except Exception as e:
 ########################################## BOOT UP WINDOW ###########################################
 def ChangeSettings(write=False):
 	import pickle
-	global background, textColor, chatBgColor, voice_id, ass_volume, ass_voiceRate, AITaskStatusLblBG, KCS_IMG
+	global background, textColor, chatBgColor, voice_id, ass_volume, ass_voiceRate, AITaskStatusLblBG, KCS_IMG, botChatTextBg, botChatText, userChatTextBg
 	setting = {'background': background,
 				'textColor': textColor,
 				'chatBgColor': chatBgColor,
 				'AITaskStatusLblBG': AITaskStatusLblBG,
 				'KCS_IMG': KCS_IMG,
+				'botChatText': botChatText,
+				'botChatTextBg': botChatTextBg,
+				'userChatTextBg': userChatTextBg,
 				'voice_id': voice_id,
 				'ass_volume': ass_volume,
 				'ass_voiceRate': ass_voiceRate
@@ -84,6 +91,9 @@ def ChangeSettings(write=False):
 			chatBgColor = loadSettings['chatBgColor']
 			AITaskStatusLblBG = loadSettings['AITaskStatusLblBG']
 			KCS_IMG = loadSettings['KCS_IMG']
+			botChatText = loadSettings['botChatText']
+			botChatTextBg = loadSettings['botChatTextBg']
+			userChatTextBg = loadSettings['userChatTextBg']
 			voice_id = loadSettings['voice_id']
 			ass_volume = loadSettings['ass_volume']
 			ass_voiceRate = loadSettings['ass_voiceRate']
@@ -92,21 +102,31 @@ def ChangeSettings(write=False):
 
 if os.path.exists('userData/settings.pck')==False:
 	ChangeSettings(True)
+def getChatColor():
+	global chatBgColor
+	chatBgColor = myColor[1]
+	colorbar['bg'] = chatBgColor
+	chat_frame['bg'] = chatBgColor
+	root1['bg'] = chatBgColor
 
 def changeTheme():
-	global background, textColor, AITaskStatusLblBG, KCS_IMG
+	global background, textColor, AITaskStatusLblBG, KCS_IMG, botChatText, botChatTextBg, userChatTextBg, chatBgColor
 	if themeValue.get()==1:
 		background, textColor, AITaskStatusLblBG, KCS_IMG = "#203647", "white", "#203647",1
 		cbl['image'] = cblDarkImg
 		kbBtn['image'] = kbphDark
 		settingBtn['image'] = sphDark
 		AITaskStatusLbl['bg'] = AITaskStatusLblBG
+		botChatText, botChatTextBg, userChatTextBg = "white", "#007cc7", "#4da8da"
+		chatBgColor = "#12232e"
 	else:
-		background, textColor, AITaskStatusLblBG, KCS_IMG= "white", "black", "#14A769", 0
+		background, textColor, AITaskStatusLblBG, KCS_IMG = "white", "black", "#14A769", 0
 		cbl['image'] = cblLightImg
 		kbBtn['image'] = kbphLight
 		settingBtn['image'] = sphLight
 		AITaskStatusLbl['bg'] = AITaskStatusLblBG
+		botChatText, botChatTextBg, userChatTextBg = "#494949", "#EAEAEA", "#23AE79"
+		chatBgColor = "white"
 
 	root['bg'], root2['bg'] = background, background
 	settingsFrame['bg'] = background
@@ -114,6 +134,7 @@ def changeTheme():
 	settingsLbl['bg'], userPhoto['bg'], userName['bg'], assLbl['bg'], voiceRateLbl['bg'], volumeLbl['bg'], themeLbl['bg'], chooseChatLbl['bg'] = background, background, background, background, background, background, background, background
 	s.configure('Wild.TRadiobutton', background=background, foreground=textColor)
 	volumeBar['bg'], volumeBar['fg'], volumeBar['highlightbackground'] = background, textColor, background
+	chat_frame['bg'], root1['bg'] = chatBgColor, chatBgColor
 	ChangeSettings(True)
 
 def changeVoice(e):
@@ -228,7 +249,10 @@ def main(text):
 			if result=="None": speak("This langauage doesn't exists")
 			else:
 				speak(f"In {langauage.capitalize()} you would say:", True)
-				speak(result.text, True)
+				if langauage=="hindi":
+					attachTOframe(result.text, True)
+					speak(result.pronunciation)
+				else: speak(result.text, True)
 			return
 
 		if 'list' in text:
@@ -476,11 +500,11 @@ def deleteUserData():
 
 ############ ATTACHING BOT/USER CHAT ON CHAT SCREEN ###########
 def attachTOframe(text,bot=False):
-	if bot:
-		botchat = Label(chat_frame,text=text, bg='#EAEAEA', fg='#494949', justify=LEFT, wraplength=250, font=('Montserrat',12, 'bold'))
+	if bot:#EAEAEA#494949#23AE79
+		botchat = Label(chat_frame,text=text, bg=botChatTextBg, fg=botChatText, justify=LEFT, wraplength=250, font=('Montserrat',12, 'bold'))
 		botchat.pack(anchor='w',ipadx=5,ipady=5,pady=5)
 	else:
-		userchat = Label(chat_frame, text=text, bg='#23AE79', fg='white', justify=RIGHT, wraplength=250, font=('Montserrat',12, 'bold'))
+		userchat = Label(chat_frame, text=text, bg=userChatTextBg, fg='white', justify=RIGHT, wraplength=250, font=('Montserrat',12, 'bold'))
 		userchat.pack(anchor='e',ipadx=2,ipady=2,pady=5)
 
 def clearChatScreen():
@@ -490,6 +514,7 @@ def clearChatScreen():
 ### SWITCHING BETWEEN FRAMES ###
 def raise_frame(frame):
 	frame.tkraise()
+	clearChatScreen()
 
 ################# SHOWING DOWNLOADED IMAGES ###############
 img0, img1, img2, img3 = None, None, None, None
@@ -536,8 +561,11 @@ def WAEMPOPUP(Service='None', rec='Reciever'):
 	global WAEMEntry
 	PopUProot = Tk()
 	PopUProot.title(f'{Service} Service')
-	PopUProot.attributes('-toolwindow', True)
+	# PopUProot.attributes('-toolwindow', True)
 	PopUProot.configure(bg='white')
+
+	if Service=="WhatsApp": PopUProot.iconbitmap("extrafiles/images/whatsapp.ico")
+	else: PopUProot.iconbitmap("extrafiles/images/email.ico")
 	w_width, w_height = 410, 200
 	s_width, s_height = PopUProot.winfo_screenwidth(), PopUProot.winfo_screenheight()
 	x, y = (s_width/2)-(w_width/2), (s_height/2)-(w_height/2)
@@ -581,8 +609,6 @@ if __name__ == '__main__':
 
 	root = Tk()
 	root.title('F.R.I.D.A.Y')
-	rootIcon = PhotoImage(file='extrafiles/images/assistant2.png')
-	root.iconphoto(False, rootIcon)
 	w_width, w_height = 400, 650
 	s_width, s_height = root.winfo_screenwidth(), root.winfo_screenheight()
 	x, y = (s_width/2)-(w_width/2), (s_height/2)-(w_height/2)
@@ -722,10 +748,10 @@ if __name__ == '__main__':
 	themeLbl.place(x=0,y=143)
 	themeValue = IntVar()
 	s = ttk.Style()
-	s.configure('Wild.TRadiobutton', background=background, foreground=textColor)
-	darkBtn = ttk.Radiobutton(settingsFrame, text='Dark', value=1, variable=themeValue, style='Wild.TRadiobutton', command=changeTheme)
+	s.configure('Wild.TRadiobutton', background=background, foreground=textColor, focuscolor=s.configure(".")["background"])
+	darkBtn = ttk.Radiobutton(settingsFrame, text='Dark', value=1, variable=themeValue, style='Wild.TRadiobutton', command=changeTheme, takefocus=False)
 	darkBtn.place(x=150,y=145)
-	lightBtn = ttk.Radiobutton(settingsFrame, text='Light', value=2, variable=themeValue, style='Wild.TRadiobutton', command=changeTheme)
+	lightBtn = ttk.Radiobutton(settingsFrame, text='Light', value=2, variable=themeValue, style='Wild.TRadiobutton', command=changeTheme, takefocus=False)
 	lightBtn.place(x=230,y=145)
 
 	chooseChatLbl = Label(settingsFrame, text='Chat Background', font=('Arial', 13), fg=textColor, bg=background)
@@ -741,7 +767,8 @@ if __name__ == '__main__':
 	backBtn.place(x=5, y=250)
 	clearFaceBtn.place(x=120, y=250)
 
-
+	attachTOframe("what is the time")
+	attachTOframe("Current time is 11PM", True)
 	try:
 		# pass
 		Thread(target=voiceMedium).start()
@@ -753,5 +780,6 @@ if __name__ == '__main__':
 	except Exception as e:
 		print('System is Offline...')
 	
+	root.iconbitmap('extrafiles/images/assistant2.ico')
 	raise_frame(root1)
 	root.mainloop()
