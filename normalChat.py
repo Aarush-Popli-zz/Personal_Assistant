@@ -67,3 +67,14 @@ def reply(query):
 		return choice(data[query[0]])
 
 	return choice(response)
+
+
+from googletrans import Translator, LANGUAGES
+
+def lang_translate(text,language):
+	if language in LANGUAGES.values():
+		translator = Translator()
+		result = translator.translate(text, src='en', dest=language)
+		return result
+	else:
+		return "None"
