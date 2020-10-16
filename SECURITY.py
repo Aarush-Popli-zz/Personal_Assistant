@@ -34,7 +34,7 @@ def startLogin():
 			loginStatus['text'] = 'UNLOCKED'
 			loginStatus['fg'] = 'green'
 			faceStatus['text']='(Logged In)'
-			# os.system('python GUIASSISTANT.py')
+			os.system('python GUIASSISTANT.py')
 		else:
 			print('Error Occurred')
 
@@ -92,12 +92,10 @@ def startCapturing():
 		cv2.imwrite(file_name_path, face)
 		print(count)
 		progress_bar['value'] = count
-		# progressLbl['text'] = 'Progress ' + str(count) + '%'
 
 		cv2.putText(face, str(count), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (0,255,0), 2)
 	else:
 		pass
-		# progressLbl['text'] = 'Face Not Clear'
 	
 	if count==100:
 		progress_bar.destroy()
@@ -117,18 +115,22 @@ def startCapturing():
 	lmain.after(10, startCapturing)
 
 def Add_Face():
+
 	global cap
 	user = nameField.get()
 	gender = r.get()
 	if user != '' and gender!=0:
-		cap = cv2.VideoCapture(0)
-		startCapturing()
-		progress_bar.place(x=11, y=265)
-		statusLbl['text'] = ''
-		gen = 'Male'
-		if gender==2: gen = 'Female'
-		u = UserData()
-		u.updateData(user, gen)
+		if agr.get()==1:
+			cap = cv2.VideoCapture(0)
+			startCapturing()
+			progress_bar.place(x=20, y=273)
+			statusLbl['text'] = ''
+			gen = 'Male'
+			if gender==2: gen = 'Female'
+			u = UserData()
+			u.updateData(user, gen)
+		else:
+			statusLbl['text'] = '(Check the Condition)'
 	else:
 		statusLbl['text'] = '(Please fill the details)'
 
@@ -140,14 +142,13 @@ def raise_frame(frame):
 if __name__ == '__main__':
 
 	root = Tk()
-	root.title('ASSISTANT')
-	root.attributes('-toolwindow', True)
+	root.title('F.R.I.D.A.Y.')
 	w_width, w_height = 350, 600
 	s_width, s_height = root.winfo_screenwidth(), root.winfo_screenheight()
 	x, y = (s_width/2)-(w_width/2), (s_height/2)-(w_height/2)
 	root.geometry('%dx%d+%d+%d' % (w_width,w_height,x,y-30)) #center location of the screen
 	root.configure(bg=background)
-
+	# root.attributes('-toolwindow', True)
 	root1 = Frame(root, bg=background)
 	root2 = Frame(root, bg=background)
 
@@ -158,7 +159,8 @@ if __name__ == '__main__':
 	########  MAIN SCREEN  #########
 	################################
 
-	image1 = Image.open('extrafiles/images/menu.jpg')
+	image1 = Image.open('extrafiles/images/home2.jpg')
+	image1 = image1.resize((300,250))
 	defaultImg1 = ImageTk.PhotoImage(image1)
 
 	dataFrame1 = Frame(root1, bd=10, bg=background)
@@ -173,11 +175,11 @@ if __name__ == '__main__':
 
 	#add face
 	loginStatus = Label(root1, text='LOCKED', font=('Arial Bold', 15), bg=background, fg='red')
-	loginStatus.pack(pady=(50,0))	
+	loginStatus.pack(pady=(50,10))	
 
 	if os.path.exists('userData/trainer.yml')==False:
 		loginStatus['text'] = 'Your Face is not registered'
-		addFace = Button(root1, text='Add Face', font=('Arial', 12), bg='blue', fg='white', relief=FLAT, command=lambda:raise_frame(root2))
+		addFace = Button(root1, text='   Register Face   ', font=('Arial', 12), bg='#018384', fg='white', relief=FLAT, command=lambda:raise_frame(root2))
 		addFace.pack(ipadx=10)
 	else:
 		# pass
@@ -191,7 +193,8 @@ if __name__ == '__main__':
 	########  FACE ADD SCREEN  #######
 	##################################
 
-	image2 = Image.open('extrafiles/images/defaultFace2.jpg')
+	image2 = Image.open('extrafiles/images/defaultFace4.png')
+	image2 = image2.resize((300, 250))
 	defaultImg2 = ImageTk.PhotoImage(image2)
 
 	dataFrame2 = Frame(root2, bd=10, bg=background)
@@ -206,15 +209,12 @@ if __name__ == '__main__':
 	userFrame2.pack(padx=10, pady=10)
 
 	#progress
-	progress_bar = ttk.Progressbar(dataFrame2, orient=HORIZONTAL, length=300, mode='determinate')
-	# progressLbl = Label(dataFrame2, text='', font=('Arial Bold', 10), bg=background, fg=textColor)
-	# progressLbl.place(x=120, y=265)
-	# progress_bar.place(x=11, y=265)
+	progress_bar = ttk.Progressbar(root2, orient=HORIZONTAL, length=303, mode='determinate')
 
 	#name
 	nameLbl = Label(userFrame2, text='Name', font=('Arial Bold', 12), fg=textColor, bg=background)
 	nameLbl.place(x=10,y=10)
-	nameField = Entry(userFrame2, bd=5, font=('Arial 10'), width=25, relief=FLAT)
+	nameField = Entry(userFrame2, bd=5, font=('Arial Bold', 10), width=25, relief=FLAT)
 	nameField.focus()
 	nameField.place(x=80,y=10)
 
@@ -222,18 +222,21 @@ if __name__ == '__main__':
 	genLbl.place(x=10,y=50)
 	r = IntVar()
 	s = ttk.Style()
-	s.configure('Wild.TRadiobutton', background=background, foreground=textColor)
-	genMale = ttk.Radiobutton(userFrame2, text='Male', value=1, variable=r, style='Wild.TRadiobutton')
+	s.configure('Wild.TRadiobutton', background=background, foreground=textColor, focuscolor=s.configure(".")["background"])
+	genMale = ttk.Radiobutton(userFrame2, text='Male', value=1, variable=r, style='Wild.TRadiobutton', takefocus=False)
 	genMale.place(x=80,y=52)
-	genFemale = ttk.Radiobutton(userFrame2, text='Female', value=2, variable=r, style='Wild.TRadiobutton')
-	genFemale.place(x=170,y=52)
+	genFemale = ttk.Radiobutton(userFrame2, text='Female', value=2, variable=r, style='Wild.TRadiobutton', takefocus=False)
+	genFemale.place(x=150,y=52)
 
 	#agreement
-	agree = Checkbutton(userFrame2, text='I agree to use my face for Security purpose', fg=textColor, bg=background)
+	agr = IntVar()
+	sc = ttk.Style()
+	sc.configure('Wild.TCheckbutton', background=background, foreground=textColor, focuscolor=sc.configure(".")["background"])
+	# agree = Checkbutton(userFrame2, text='I agree to use my face for Security purpose', fg=textColor, bg=background, activebackground=background, activeforeground=textColor)
+	agree = ttk.Checkbutton(userFrame2, text='I agree to use my Face for Security purpose', style='Wild.TCheckbutton', takefocus=False, variable=agr)
 	agree.place(x=28, y=100)
-
 	#add face
-	addBtn = Button(userFrame2, text='    Add Face    ', font=('Arial Bold', 12), bg='green', fg='white', command=Add_Face, relief=FLAT)
+	addBtn = Button(userFrame2, text='    Add Face    ', font=('Arial Bold', 12), bg='#01933B', fg='white', command=Add_Face, relief=FLAT)
 	addBtn.place(x=90, y=150)
 
 	#status of add face
@@ -244,6 +247,7 @@ if __name__ == '__main__':
 	####### CHAT SCREEN #######
 	###########################
 	
+	root.iconbitmap('extrafiles/images/assistant2.ico')
 	raise_frame(root1)
 	root.mainloop()
 
