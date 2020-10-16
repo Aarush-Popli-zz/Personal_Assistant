@@ -8,6 +8,7 @@ import urllib.request
 import os
 from geopy.geocoders import Nominatim
 from geopy.distance import great_circle
+
 class COVID:
 	def __init__(self):
 		self.total = 'Not Available'
