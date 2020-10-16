@@ -1,8 +1,8 @@
 from difflib import get_close_matches
 import json
-from random import randint
+from random import choice
 
-data = json.load(open('extrafiles/dict_data.json'))
+data = json.load(open('extrafiles/dict_data.json', encoding='utf-8'))
 
 def getMeaning(word):
 	if word in data:
@@ -19,11 +19,16 @@ def translate(query):
 		ind = query.index('meaning of')
 		word = query[ind+10:].strip().lower()
 	elif 'definition' in query:
-		ind = query.index('definition of')
-		word = query[ind+13:].strip().lower()
+		try:
+			ind = query.index('definition of')
+			word = query[ind+13:].strip().lower()
+		except:
+			ind = query.index('definition')
+			word = query[ind+10:].strip().lower()
 	else: word = query
+
 	word, result, check = getMeaning(word)
-	result = result[randint(0, len(result)-1)]
+	result = choice(result)
 
 	if check==1:
 		return ["Here's the definition of \"" +word.capitalize()+ '"', result]
