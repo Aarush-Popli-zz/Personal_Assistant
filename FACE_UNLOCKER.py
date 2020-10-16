@@ -88,3 +88,4 @@ def viewPhoto():
 	from PIL import Image
 	img = Image.open(imageName)
 	img.show()
+
