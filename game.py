@@ -188,6 +188,7 @@ def rockPaperScissorWindow():
 	botMoveLBL.place(x=12, y=150)
 
 	Thread(target=playRock).start()
+	root.iconbitmap("extrafiles/images/game.ico")
 	root.mainloop()
 
 # rockPaperScissorWindow()
