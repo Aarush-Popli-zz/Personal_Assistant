@@ -29,7 +29,7 @@ def toDoList(text):
 
 def showtoDoList():
 	if os.path.isfile(file)==False:
-		return "It looks like that list is empty"
+		return ["It looks like that list is empty"]
 	
 	print("Today's List")
 	f = open(file, 'r')
