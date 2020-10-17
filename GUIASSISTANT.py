@@ -58,6 +58,7 @@ try:
 	user = UserData()
 	user.extractData()
 	ownerName = user.getName().split()[0]
+	ownerPhoto = user.getUserPhoto()
 except Exception as e:
 	print("You're not Registered Yet !\nRun SECURITY.py file to register your face.")
 	raise SystemExit
@@ -264,6 +265,9 @@ def main(text):
 				return
 			if isContain(text, ['show', 'my list']):
 				items = ToDo.showtoDoList()
+				if len(items)==1:
+					speak(items[0], True, True)
+					return
 				attachTOframe('\n'.join(items), True)
 				speak(items[0])
 				return
@@ -691,7 +695,7 @@ if __name__ == '__main__':
 	UserField.insert(0, "Ask me anything...")
 	
 	#User and Bot Icon
-	userIcon = PhotoImage(file="extrafiles/images/owner.png")
+	userIcon = PhotoImage(file="extrafiles/images/avatars/ChatIcons/a"+str(ownerPhoto)+".png")
 	userIcon = userIcon.subsample(2,2)
 	botIcon = PhotoImage(file="extrafiles/images/assistant2.png")
 	botIcon = botIcon.subsample(2,2)
@@ -706,7 +710,7 @@ if __name__ == '__main__':
 	separator = ttk.Separator(root2, orient='horizontal')
 	separator.pack(fill=X)
 	#User Photo
-	img = PhotoImage(file = "extrafiles/images/user2.png")
+	img = PhotoImage(file = "extrafiles/images/avatars/a"+str(ownerPhoto)+".png")
 	img = img.subsample(2,2)
 	userPhoto = Label(root2, image=img, bg=background)
 	userPhoto.pack(pady=(20, 5))
@@ -767,8 +771,6 @@ if __name__ == '__main__':
 	backBtn.place(x=5, y=250)
 	clearFaceBtn.place(x=120, y=250)
 
-	attachTOframe("what is the time")
-	attachTOframe("Current time is 11PM", True)
 	try:
 		# pass
 		Thread(target=voiceMedium).start()
