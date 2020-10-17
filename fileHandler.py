@@ -74,6 +74,7 @@ def CreateHTMLProject(project_name='Sample'):
 	jsFile.close()
 
 	appLocation = "C:\\Program Files\\Sublime Text 3\\sublime_text.exe"
+	# subprocess.Popen([appLocation, path + project_name])
 	subprocess.Popen([appLocation, path + project_name + "/index.html"])
 	subprocess.Popen([appLocation, path + project_name + "/style.css"])
 	subprocess.Popen([appLocation, path + project_name + "/script.js"])
@@ -82,3 +83,4 @@ def CreateHTMLProject(project_name='Sample'):
 
 
 	return f'Successfully Created {project_name} Project'
+
