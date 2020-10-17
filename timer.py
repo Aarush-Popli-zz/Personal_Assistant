@@ -23,7 +23,8 @@ def startTimer(query):
 def timer():
 	root = Tk()
 	root.title("Timer")
-	root.attributes('-toolwindow', True)
+	root.iconbitmap("extrafiles/images/timer.ico")
+	# root.attributes('-toolwindow', True)
 	w_width, w_height = 300, 150
 	s_width, s_height = root.winfo_screenwidth(), root.winfo_screenheight()
 	x, y = (s_width/2)-(w_width/2), (s_height/2)-(w_height/2)
