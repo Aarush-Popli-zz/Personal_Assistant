@@ -186,8 +186,11 @@ def speak(text, display=False, icon=False):
 	if icon: Label(chat_frame, image=botIcon, bg=chatBgColor).pack(anchor='w',pady=0)
 	if display: attachTOframe(text, True)
 	print('\n'+ai_name.upper()+': '+text)
-	engine.say(text)
-	engine.runAndWait()
+	try:
+		engine.say(text)
+		engine.runAndWait()
+	except:
+		print("Try not to type more...")
 
 ####################################### SET UP SPEECH TO TEXT #######################################
 def record(clearChat=True, iconDisplay=True):
@@ -219,12 +222,24 @@ def record(clearChat=True, iconDisplay=True):
 def voiceMedium():
 	while True:
 		query = record()
+		if query == 'None': continue
 		if isContain(query, EXIT_COMMANDS):
 			speak('Shutting down the System. Good Bye Sir!', True, True)
 			break
-		if query == 'None': continue
 		else: main(query.lower())
 	appControl.Win_Opt('close')
+
+def keyboardInput(e):
+	user_input = UserField.get()
+	if user_input!="":
+		clearChatScreen()
+		if isContain(user_input, EXIT_COMMANDS):
+			speak('Shutting down the System. Good Bye Sir!', True, True)
+		else:
+			Label(chat_frame, image=userIcon, bg=chatBgColor).pack(anchor='e',pady=0)
+			attachTOframe(user_input.capitalize())
+			Thread(target=main, args=(user_input.lower(),)).start()
+		UserField.delete(0, END)
 
 ###################################### TASK/COMMAND HANDLER #########################################
 def isContain(txt, lst):
@@ -604,12 +619,16 @@ chatMode = 1
 def changeChatMode():
 	global chatMode
 	if chatMode==1:
+		appControl.volumeControl('mute')
 		VoiceModeFrame.pack_forget()
 		TextModeFrame.pack(fill=BOTH)
+		UserField.focus()
 		chatMode=0
 	else:
+		appControl.volumeControl('full')
 		TextModeFrame.pack_forget()
 		VoiceModeFrame.pack(fill=BOTH)
+		root.focus()
 		chatMode=1
 
 ############################################## MAIN GUI #############################################
@@ -665,11 +684,6 @@ if __name__ == '__main__':
 	chat_frame.pack(padx=10)
 	chat_frame.pack_propagate(0)
 
-	# userField = Entry(root1, bd=10, font=('Arial',15),fg=boxFG,width=35,relief=FLAT, bg=boxBG,insertbackground="black")
-	# userField.focus_set()
-	# userField.pack(pady)
-	# root.bind('<Return>', enter)
-
 	bottomFrame1 = Frame(root1, bg='#dfdfdf', height=100)
 	bottomFrame1.pack(fill=X, side=BOTTOM)
 	VoiceModeFrame = Frame(bottomFrame1, bg='#dfdfdf')
@@ -714,14 +728,15 @@ if __name__ == '__main__':
 	micImg = micImg.subsample(2,2)
 	micBtn = Button(TextModeFrame,image=micImg,height=30,width=30, bg='#dfdfdf',borderwidth=0,activebackground="#dfdfdf", command=changeChatMode)
 	micBtn.place(relx=1.0, y=30,x=-20, anchor="ne")	
+	
 	#Text Field
 	TextFieldImg = PhotoImage(file='extrafiles/images/textField.png')
 	UserFieldLBL = Label(TextModeFrame, fg='white', image=TextFieldImg, bg='#dfdfdf')
 	UserFieldLBL.pack(pady=17, side=LEFT, padx=10)
 	UserField = Entry(TextModeFrame, fg='white', bg='#203647', font=('Montserrat', 16), bd=6, width=22, relief=FLAT)
 	UserField.place(x=20, y=30)
-	UserField.focus()
 	UserField.insert(0, "Ask me anything...")
+	UserField.bind('<Return>', keyboardInput)
 	
 	#User and Bot Icon
 	userIcon = PhotoImage(file="extrafiles/images/avatars/ChatIcons/a"+str(ownerPhoto)+".png")
