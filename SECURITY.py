@@ -9,7 +9,7 @@ from threading import Thread
 from userHandler import UserData
 import FACE_UNLOCKER as FU
 
-background, textColor = 'black', '#fffff9'
+background, textColor = 'black', '#F6FAFB'
 background, textColor = textColor, background
 
 avatarChoosen = 0
@@ -199,13 +199,13 @@ if __name__ == '__main__':
 	logo.pack(padx=10, pady=10)
 
 	#welcome label
-	welcLbl = Label(root1, text='Hi there,\nWelcome to the world of\nScience & Technology', font=('Arial', 15), fg=textColor, bg=background)
+	welcLbl = Label(root1, text='Hi there,\nWelcome to the world of\nScience & Technology', font=('Arial Bold', 15), fg='#303E54', bg=background)
 	welcLbl.pack(padx=10, pady=20)
 
 
 	#add face
 	loginStatus = Label(root1, text='LOCKED', font=('Arial Bold', 15), bg=background, fg='red')
-	loginStatus.pack(pady=(50,10))	
+	loginStatus.pack(pady=(40,20))	
 
 	if os.path.exists('userData/trainer.yml')==False:
 		loginStatus['text'] = 'Your Face is not registered'
@@ -242,17 +242,17 @@ if __name__ == '__main__':
 	progress_bar = ttk.Progressbar(root2, orient=HORIZONTAL, length=303, mode='determinate')
 
 	#name
-	nameLbl = Label(userFrame2, text='Name', font=('Arial Bold', 12), fg=textColor, bg=background)
+	nameLbl = Label(userFrame2, text='Name', font=('Arial Bold', 12), fg='#303E54', bg=background)
 	nameLbl.place(x=10,y=10)
 	nameField = Entry(userFrame2, bd=5, font=('Arial Bold', 10), width=25, relief=FLAT, bg='#D4D5D7')
 	nameField.focus()
 	nameField.place(x=80,y=10)
 
-	genLbl = Label(userFrame2, text='Gender', font=('Arial Bold', 12), fg=textColor, bg=background)
+	genLbl = Label(userFrame2, text='Gender', font=('Arial Bold', 12), fg='#303E54', bg=background)
 	genLbl.place(x=10,y=50)
 	r = IntVar()
 	s = ttk.Style()
-	s.configure('Wild.TRadiobutton', background=background, foreground=textColor, focuscolor=s.configure(".")["background"])
+	s.configure('Wild.TRadiobutton', background=background, foreground=textColor, font=('Arial Bold', 10), focuscolor=s.configure(".")["background"])
 	genMale = ttk.Radiobutton(userFrame2, text='Male', value=1, variable=r, style='Wild.TRadiobutton', takefocus=False)
 	genMale.place(x=80,y=52)
 	genFemale = ttk.Radiobutton(userFrame2, text='Female', value=2, variable=r, style='Wild.TRadiobutton', takefocus=False)
@@ -261,9 +261,9 @@ if __name__ == '__main__':
 	#agreement
 	agr = IntVar()
 	sc = ttk.Style()
-	sc.configure('Wild.TCheckbutton', background=background, foreground=textColor, focuscolor=sc.configure(".")["background"])
+	sc.configure('Wild.TCheckbutton', background=background, foreground='#303E54', font=('Arial Bold',10), focuscolor=sc.configure(".")["background"])
 	# agree = Checkbutton(userFrame2, text='I agree to use my face for Security purpose', fg=textColor, bg=background, activebackground=background, activeforeground=textColor)
-	agree = ttk.Checkbutton(userFrame2, text='I agree to use my Face for Security purpose', style='Wild.TCheckbutton', takefocus=False, variable=agr)
+	agree = ttk.Checkbutton(userFrame2, text='I agree to use my Face for Security', style='Wild.TCheckbutton', takefocus=False, variable=agr)
 	agree.place(x=28, y=100)
 	#add face
 	addBtn = Button(userFrame2, text='    Add Face    ', font=('Arial Bold', 12), bg='#01933B', fg='white', command=Add_Face, relief=FLAT)
@@ -277,7 +277,7 @@ if __name__ == '__main__':
 	#### AVATAR SELECTION ####
 	##########################
 	
-	Label(root3, text="Choose Your Avatar", font=('montserrat', 15), bg=background, fg=textColor).pack()
+	Label(root3, text="Choose Your Avatar", font=('arial', 15), bg=background, fg='#303E54').pack()
 
 	avatarContainer = Frame(root3, bg=background, width=300, height=500)
 	avatarContainer.pack(pady=10)
@@ -348,7 +348,7 @@ if __name__ == '__main__':
 	Label(root4, text="Your account has been successfully activated!", font=('Arial Bold',15), bg=background, fg='#303E54', wraplength=300).pack(pady=10)
 	Label(root4, text="Launch the APP again to get started the conversation with your Personal Assistant", font=('arial',13), bg=background, fg='#A3A5AB', wraplength=350).pack()
 
-	Button(root4, text='     OK     ', bg='#0475BB', fg='white', font=('Arial Bold', 18), bd=0, relief=FLAT, command=lambda:quit()).pack(pady=50)
+	Button(root4, text='     OK     ', bg='#0475BB', fg='white',font=('Arial Bold', 18), bd=0, relief=FLAT, command=lambda:quit()).pack(pady=50)
 
 	root.iconbitmap('extrafiles/images/assistant2.ico')
 	raise_frame(root1)
