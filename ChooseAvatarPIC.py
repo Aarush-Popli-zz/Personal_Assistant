@@ -126,4 +126,5 @@ if __name__ == "__main__":
 	Button(BottomFrame, text='         Update         ', font=('Montserrat Bold', 15), bg='#01933B', fg='white', bd=0, relief=FLAT, command=SavePhoto).grid(row=0, column=0, padx=10)
 	Button(BottomFrame, text='         Cancel         ', font=('Montserrat Bold', 15), bg='#EDEDED', fg='#3A3834', bd=0, relief=FLAT, command=closeWindow).grid(row=0, column=1, padx=10)
 
+	avtrRoot.iconbitmap("extrafiles/images/changeProfile.ico")
 	avtrRoot.mainloop()
