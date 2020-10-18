@@ -8,15 +8,18 @@ WAKE_COMMANDS = ['hello','hi','hey',ai_name,'hai','activate','google']
 EXIT_COMMANDS = ['bye','exit','quit','shutdown']
 WelcomeSpeech = "Hello, I'm your Personal Assistant. You can ask me any thing, and I will perform the task for you."
 
-botChatTextBg = "#EAEAEA"
-botChatText = "#494949"
-userChatTextBg = "#23AE79"
+avatarChoosen = 0
+choosedAvtrImage = None
+
+botChatTextBg = "#007cc7"
+botChatText = "white"
+userChatTextBg = "#4da8da"
 
 chatBgColor = '#12232e'
-background = 'white'
-textColor = 'black'
-AITaskStatusLblBG = '#14A769'
-KCS_IMG = 0 #light, 1 for dark
+background = '#203647'
+textColor = 'white'
+AITaskStatusLblBG = '#203647'
+KCS_IMG = 1 #light, 1 for dark
 voice_id = 0 #female
 ass_volume = 1 #max volume
 ass_voiceRate = 200 #normal voice rate
@@ -120,14 +123,16 @@ def changeTheme():
 		AITaskStatusLbl['bg'] = AITaskStatusLblBG
 		botChatText, botChatTextBg, userChatTextBg = "white", "#007cc7", "#4da8da"
 		chatBgColor = "#12232e"
+		colorbar['bg'] = chatBgColor
 	else:
-		background, textColor, AITaskStatusLblBG, KCS_IMG = "white", "black", "#14A769", 0
+		background, textColor, AITaskStatusLblBG, KCS_IMG = "#F6FAFB", "#303E54", "#14A769", 0
 		cbl['image'] = cblLightImg
 		kbBtn['image'] = kbphLight
 		settingBtn['image'] = sphLight
 		AITaskStatusLbl['bg'] = AITaskStatusLblBG
 		botChatText, botChatTextBg, userChatTextBg = "#494949", "#EAEAEA", "#23AE79"
-		chatBgColor = "white"
+		chatBgColor = "#F6FAFB"
+		colorbar['bg'] = '#E8EBEF'
 
 	root['bg'], root2['bg'] = background, background
 	settingsFrame['bg'] = background
@@ -606,8 +611,31 @@ def changeChatMode():
 		TextModeFrame.pack_forget()
 		VoiceModeFrame.pack(fill=BOTH)
 		chatMode=1
+
 ############################################## MAIN GUI #############################################
 
+def onhover(e):
+	userPhoto['image'] = chngPh
+def onleave(e):
+	userPhoto['image'] = userProfileImg
+
+def UpdateIMAGE():
+	global ownerPhoto, userProfileImg, userIcon
+
+	os.system('python ChooseAvatarPIC.py')
+	u = UserData()
+	u.extractData()
+	ownerPhoto = u.getUserPhoto()
+	userProfileImg = ImageTk.PhotoImage(Image.open("extrafiles/images/avatars/a"+str(ownerPhoto)+".png").resize((120, 120)))
+
+	userPhoto['image'] = userProfileImg
+	userIcon = PhotoImage(file="extrafiles/images/avatars/ChatIcons/a"+str(ownerPhoto)+".png")
+
+def SelectAvatar():	
+	Thread(target=UpdateIMAGE).start()
+
+
+######################################################################################################
 if __name__ == '__main__':
 	# ChangeSettings()
 
@@ -623,8 +651,9 @@ if __name__ == '__main__':
 
 	root1 = Frame(root, bg=chatBgColor)
 	root2 = Frame(root, bg=background)
+	root3 = Frame(root, bg=background)
 
-	for f in (root1, root2):
+	for f in (root1, root2, root3):
 		f.grid(row=0, column=0, sticky='news')	
 	
 	################################
@@ -696,7 +725,6 @@ if __name__ == '__main__':
 	
 	#User and Bot Icon
 	userIcon = PhotoImage(file="extrafiles/images/avatars/ChatIcons/a"+str(ownerPhoto)+".png")
-	userIcon = userIcon.subsample(2,2)
 	botIcon = PhotoImage(file="extrafiles/images/assistant2.png")
 	botIcon = botIcon.subsample(2,2)
 	
@@ -710,13 +738,22 @@ if __name__ == '__main__':
 	separator = ttk.Separator(root2, orient='horizontal')
 	separator.pack(fill=X)
 	#User Photo
-	img = PhotoImage(file = "extrafiles/images/avatars/a"+str(ownerPhoto)+".png")
-	img = img.subsample(2,2)
-	userPhoto = Label(root2, image=img, bg=background)
+	userProfileImg = Image.open("extrafiles/images/avatars/a"+str(ownerPhoto)+".png")
+	userProfileImg = userProfileImg.resize((120, 120))
+	userProfileImg = ImageTk.PhotoImage(userProfileImg)
+	userPhoto = Button(root2, image=userProfileImg, bg=background, bd=0, relief=FLAT, activebackground=background, command=SelectAvatar)
 	userPhoto.pack(pady=(20, 5))
 
+	#Change Photo
+	chngPh = Image.open("extrafiles/images/avatars/changephoto2.png")
+	chngPh = chngPh.resize((120, 120))
+	chngPh = ImageTk.PhotoImage(chngPh)
+	
+	userPhoto.bind('<Enter>', onhover)
+	userPhoto.bind('<Leave>', onleave)
+
 	#Username
-	userName = Label(root2, text=ownerName, font=('Arial', 12), fg=textColor, bg=background)
+	userName = Label(root2, text=ownerName, font=('Arial Bold', 15), fg=textColor, bg=background)
 	userName.pack()
 
 	#Settings Frame
@@ -752,7 +789,7 @@ if __name__ == '__main__':
 	themeLbl.place(x=0,y=143)
 	themeValue = IntVar()
 	s = ttk.Style()
-	s.configure('Wild.TRadiobutton', background=background, foreground=textColor, focuscolor=s.configure(".")["background"])
+	s.configure('Wild.TRadiobutton', font=('Arial Bold', 10), background=background, foreground=textColor, focuscolor=s.configure(".")["background"])
 	darkBtn = ttk.Radiobutton(settingsFrame, text='Dark', value=1, variable=themeValue, style='Wild.TRadiobutton', command=changeTheme, takefocus=False)
 	darkBtn.place(x=150,y=145)
 	lightBtn = ttk.Radiobutton(settingsFrame, text='Light', value=2, variable=themeValue, style='Wild.TRadiobutton', command=changeTheme, takefocus=False)
