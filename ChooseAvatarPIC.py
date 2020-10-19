@@ -28,7 +28,6 @@ def selectAVATAR(avt=0):
 	for avtr in (avtb1,avtb2,avtb3,avtb4,avtb5,avtb6,avtb7,avtb8,avtb9,avtb10,avtb11,avtb12,avtb13,avtb14,avtb15):
 		if i==avt:
 			avtr['state'] = 'disabled'
-			# userPIC['image'] = avtr['image']
 		else:
 			avtr['state'] = 'normal'
 		i+=1
