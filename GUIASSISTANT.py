@@ -1,12 +1,11 @@
 #########################
 # GLOBAL VARIABLES USED #
 #########################
+ai_name = 'F.R.I.D.Y.'.lower()
+EXIT_COMMANDS = ['bye','exit','quit','shutdown']
+
 rec_email, rec_phoneno = "", ""
 WAEMEntry = None
-ai_name = 'jarvis'.lower()
-WAKE_COMMANDS = ['hello','hi','hey',ai_name,'hai','activate','google']
-EXIT_COMMANDS = ['bye','exit','quit','shutdown']
-WelcomeSpeech = "Hello, I'm your Personal Assistant. You can ask me any thing, and I will perform the task for you."
 
 avatarChoosen = 0
 choosedAvtrImage = None
@@ -19,8 +18,8 @@ chatBgColor = '#12232e'
 background = '#203647'
 textColor = 'white'
 AITaskStatusLblBG = '#203647'
-KCS_IMG = 1 #light, 1 for dark
-voice_id = 0 #female
+KCS_IMG = 1 #0 for light, 1 for dark
+voice_id = 0 #0 for female, 1 for male
 ass_volume = 1 #max volume
 ass_voiceRate = 200 #normal voice rate
 
@@ -106,6 +105,7 @@ def ChangeSettings(write=False):
 
 if os.path.exists('userData/settings.pck')==False:
 	ChangeSettings(True)
+	
 def getChatColor():
 	global chatBgColor
 	chatBgColor = myColor[1]
@@ -395,7 +395,7 @@ def main(text):
 				speak('Here you go...', True, True)
 			return
 
-		if isContain(text, ['math', '+', '-', 'binary']):
+		if isContain(text, ['value of','math',' + ',' - ',' x ','multiply','divided by','binary','hexadecimal','octal','shift','sin ','cos ','tan ']):
 			try:
 				speak(('Result is: ' + math_function.perform(text)), True, True)
 			except Exception as e:
@@ -517,6 +517,7 @@ def deleteUserData():
 	messagebox.showinfo('Clear Face Data', 'Your face has been cleared\nRegister your face again to use.')
 	import shutil
 	shutil.rmtree('userData')
+	root.destroy()
 
 						#####################
 						####### GUI #########
@@ -524,7 +525,7 @@ def deleteUserData():
 
 ############ ATTACHING BOT/USER CHAT ON CHAT SCREEN ###########
 def attachTOframe(text,bot=False):
-	if bot:#EAEAEA#494949#23AE79
+	if bot:
 		botchat = Label(chat_frame,text=text, bg=botChatTextBg, fg=botChatText, justify=LEFT, wraplength=250, font=('Montserrat',12, 'bold'))
 		botchat.pack(anchor='w',ipadx=5,ipady=5,pady=5)
 	else:
@@ -570,6 +571,7 @@ def showImages(query):
 	Label(imageContainer, image=img1, bg='#EAEAEA').grid(row=0, column=1)
 	Label(imageContainer, image=img2, bg='#EAEAEA').grid(row=1, column=0)
 	Label(imageContainer, image=img3, bg='#EAEAEA').grid(row=1, column=1)
+
 
 ############################# WAEM - WhatsApp Email ##################################
 def sendWAEM():
