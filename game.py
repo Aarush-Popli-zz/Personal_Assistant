@@ -29,7 +29,8 @@ def speak(text):
 	engine.runAndWait()
 
 def record():
-	print('\nListening...')
+	global userchat
+	userchat['text'] = "Listening..."
 	r = sr.Recognizer()
 	r.dynamic_energy_threshold = False
 	r.energy_threshold = 4000
@@ -55,8 +56,7 @@ class RockPaperScissor:
 		self.intro()
 
 	def intro(self):
-		speak('Welcome to the Rock Paper Scissor Game.\nTo STOP the Match, say STOP or Cancel.')
-		speak("Let's Play.")
+		speak("Welcome to the Rock Paper Scissor Game. To STOP the Match, say STOP or Cancel. Let's Play.")
 
 	def nextMove(self, move):
 		global userchat, botchat, totalLabel, botMoveLBL
@@ -223,4 +223,3 @@ def play(gameName):
 
 def showGames():
 	return "1. Rock Paper Scissor\n2. Online Games"
-
