@@ -10,7 +10,9 @@
 		"I'm doing Well"
 	],
 	"what is your name": [
-		"You can call me by any name"
+		"You can call me by any name",
+		"Name doesn't matter",
+		"I'm your Personal Assistant"
 	],
 	"who are you": [
 		"I'm your Personal Assistant",
@@ -21,8 +23,7 @@
 	"tell me something": [
 		"I have nothing to say...",
 		"Hmm, you can ask me anything",
-		"Hmm, you can ask me to tell a joke",
-		"You can ask me to search in wikipedia"
+		"Hmm, you can ask me to tell a joke"
 	],
 	"thank you": [
 		"Thank You",
@@ -92,5 +93,11 @@
 	"i am alone": [
 		"Don'f feel lonely. I'm always with You",
 		"I can make you feely happy, Just say tell me a joke"
+	],
+	"i like your voice": [
+		"Hope you love it...",
+		"Thanks, I think this voice suits you the most",
+		"Thank You So Much",
+		"Ohh, that's good to know"
 	]
 }
