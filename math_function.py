@@ -7,6 +7,7 @@ def basicOperations(text):
 
 	text = text.replace('plus', '+')
 	text = text.replace('minus', '-')
+	text = text.replace('x', '*')
 	text = text.replace('multiplied by', '*')
 	text = text.replace('multiply', '*')
 	text = text.replace('divided by', '/')
@@ -54,6 +55,10 @@ def trigonometry(text):
 	elif 'tan' in text:
 		return round(math.tan(rad),2)
 
+def factorial(n):
+	if n==1 or n==0: return 1
+	else: return n*factorial(n-1)
+
 def isHaving(text, lst):
 	for word in lst:
 		if word in text:
@@ -62,7 +67,8 @@ def isHaving(text, lst):
 
 def perform(text):
 	text = text.replace('math','')
-	if isHaving(text, ['sin','cos','tan']): return str(trigonometry(text))
+	if "factorial" in text: return str(factorial(int(text[text.rfind(' ')+1:])))
+	elif isHaving(text, ['sin','cos','tan']): return str(trigonometry(text))
 	elif isHaving(text, ['bin','hex','oct']): return str(conversions(text))
 	elif isHaving(text, ['shift','and','or','not']): return str(bitwiseOperations(text))
 	else: return str(basicOperations(text))
