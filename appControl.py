@@ -122,8 +122,9 @@ class WindowOpt:
 		
 
 	def takeScreenShot(self):
+		from random import randint
 		im = ImageGrab.grab()
-		im.save('ss.png')
+		im.save(f'Files and Document/ss_{randint(1, 100)}.jpg')
 
 def isContain(text, lst):
 	for word in lst:
