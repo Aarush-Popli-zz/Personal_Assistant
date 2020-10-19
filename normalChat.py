@@ -1,13 +1,7 @@
+from difflib import get_close_matches
+import json
+from random import choice
 import datetime
-
-class HelpChat:
-	def help(self):
-		print()
-	def whatCanIdo(self):
-		with open("#normal chat","r") as file:
-			for line in file:
-				line=line.strip()
-				print(line)
 
 class DateTime:
 	def currentTime(self):
@@ -52,9 +46,6 @@ def chat(text):
 
 	return result
 
-from difflib import get_close_matches
-import json
-from random import choice
 
 data = json.load(open('extrafiles/NormalChat.json', encoding='utf-8'))
 
@@ -62,16 +53,14 @@ def reply(query):
 	if query in data:
 		response =  data[query]
 	else:
-		query = get_close_matches(query, data.keys(), n=2, cutoff=0.5)
+		query = get_close_matches(query, data.keys(), n=2, cutoff=0.6)
 		if len(query)==0: return "None"
 		return choice(data[query[0]])
 
 	return choice(response)
 
-
-from googletrans import Translator, LANGUAGES
-
 def lang_translate(text,language):
+	from googletrans import Translator, LANGUAGES
 	if language in LANGUAGES.values():
 		translator = Translator()
 		result = translator.translate(text, src='en', dest=language)
