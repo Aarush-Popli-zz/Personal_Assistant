@@ -292,7 +292,7 @@ def main(text):
 				speak(items[0])
 				return
 
-		if isContain(text, ['battery', 'battery', 'system info']):
+		if isContain(text, ['battery', 'system info']):
 			result = appControl.OSHandler(text)
 			if len(result)==2:
 				speak(result[0], True, True)
@@ -300,6 +300,7 @@ def main(text):
 			else:
 				speak(result, True, True)
 			return
+			
 		if isContain(text, ['meaning', 'dictionary', 'definition', 'define']):
 			result = dictionary.translate(text)
 			speak(result[0], True, True)
@@ -395,7 +396,7 @@ def main(text):
 				speak('Here you go...', True, True)
 			return
 
-		if isContain(text, ['value of','math',' + ',' - ',' x ','multiply','divided by','binary','hexadecimal','octal','shift','sin ','cos ','tan ']):
+		if isContain(text, ['factorial','value of','math',' + ',' - ',' x ','multiply','divided by','binary','hexadecimal','octal','shift','sin ','cos ','tan ']):
 			try:
 				speak(('Result is: ' + math_function.perform(text)), True, True)
 			except Exception as e:
@@ -443,7 +444,7 @@ def main(text):
 			clearChatScreen()
 			return
 
-		if isContain(text, ['open','type','save','delete','select','enter']):
+		if isContain(text, ['open','type','save','delete','select','press enter']):
 			appControl.System_Opt(text)
 			return
 
@@ -587,7 +588,6 @@ def WAEMPOPUP(Service='None', rec='Reciever'):
 	global WAEMEntry
 	PopUProot = Tk()
 	PopUProot.title(f'{Service} Service')
-	# PopUProot.attributes('-toolwindow', True)
 	PopUProot.configure(bg='white')
 
 	if Service=="WhatsApp": PopUProot.iconbitmap("extrafiles/images/whatsapp.ico")
@@ -694,7 +694,7 @@ if __name__ == '__main__':
 	TextModeFrame.pack(fill=BOTH)
 
 	# VoiceModeFrame.pack_forget()
-	# TextModeFrame.pack_forget()
+	TextModeFrame.pack_forget()
 
 	cblLightImg = PhotoImage(file='extrafiles/images/centralButton.png')
 	cblDarkImg = PhotoImage(file='extrafiles/images/centralButton1.png')
@@ -831,8 +831,8 @@ if __name__ == '__main__':
 	except:
 		pass
 	try:
-		pass
-		# Thread(target=webScrapping.dataUpdate).start()
+		# pass
+		Thread(target=webScrapping.dataUpdate).start()
 	except Exception as e:
 		print('System is Offline...')
 	
