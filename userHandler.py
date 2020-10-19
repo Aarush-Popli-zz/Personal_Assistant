@@ -25,3 +25,7 @@ class UserData:
 	def getUserPhoto(self):
 		return self.userphoto
 
+def UpdateUserPhoto(avatar):
+	u = UserData()
+	u.extractData()
+	u.updateData(u.getName(), u.getGender(), avatar)
