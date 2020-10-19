@@ -1,18 +1,5 @@
 # PersonalAssistant
-It is an Personal Assistant, capable to perform many tasks same as Google Assistant plus more extra features...
-
-## Requirements / Modules used:  
-pyttsx3  
-speech_recognition  
-playsound  
-opencv  
-beautiful soup 4  
-pynput  
-pyscreenshot  
-smtplib  
-wikipedia  
-webbrowser  
-tkinter  
+It is an Personal Assistant, capable to perform many tasks with some unique features, that you haven'e seen yet....
 
 ## Features / Tasks it can perform:  
 1. Game (eg, Rock Paper Scissor with GUI)  
@@ -30,7 +17,15 @@ tkinter
 13. Timer  
 14. In-built search image display  
 15. Smart Dictionary Search  
-16. OS Info  
+16. OS Info, Battery Info  
+17. Window, Tab Operations  
+18. Open Websites  
+19. File Operations (Create)  
+20. Automated Project Creation  
+21. Coin Toss, Roll Dice  
+22. Translator  
+23. ToDo List  
+24. Directions on Map  
 
 ## Modules Installation:  
   pip install SpeechRecognition  
@@ -48,6 +43,8 @@ tkinter
   pip install smtplib  
   pip install youtube_search  
   pip install wmi  
+  pip install geopy  
+  pip install googletrans  
   
   
 ### To get started, run SECURITY.py file to register your face and to use it...
