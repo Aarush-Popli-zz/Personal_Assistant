@@ -450,8 +450,11 @@ def main(text):
 			return
 
 		if isContain(text, ['wiki', 'who is']):
+			Thread(target=webScrapping.downloadImage, args=(text, 1,)).start()
 			speak('Searching...', True, True)
-			speak(webScrapping.wikiResult(text), True)
+			result = webScrapping.wikiResult(text)
+			showSingleImage()
+			speak(result, True)
 			return
 		
 		if isContain(text, ['game']):
@@ -545,6 +548,11 @@ def raise_frame(frame):
 
 ################# SHOWING DOWNLOADED IMAGES ###############
 img0, img1, img2, img3 = None, None, None, None
+def showSingleImage():
+	global img0
+	img0 = ImageTk.PhotoImage(Image.open('Downloads/0.jpg').resize((90,110), Image.ANTIALIAS))
+	Label(chat_frame, image=img0, bg='#EAEAEA').pack(anchor='w')
+
 def showImages(query):
 	global img0, img1, img2, img3
 	webScrapping.downloadImage(query)
@@ -552,22 +560,11 @@ def showImages(query):
 	#Showing Images
 	imageContainer = Frame(chat_frame, bg='#EAEAEA')
 	imageContainer.pack(anchor='w')
-
-	#Opening
-	img0 = Image.open('Downloads/0.jpg')
-	img1 = Image.open('Downloads/1.jpg')
-	img2 = Image.open('Downloads/2.jpg')
-	img3 = Image.open('Downloads/3.jpg')
-	#Resizing
-	img0 = img0.resize((w,h), Image.ANTIALIAS)
-	img1 = img1.resize((w,h), Image.ANTIALIAS)
-	img2 = img2.resize((w,h), Image.ANTIALIAS)
-	img3 = img3.resize((w,h), Image.ANTIALIAS)
-
-	img0 = ImageTk.PhotoImage(img0)
-	img1 = ImageTk.PhotoImage(img1)
-	img2 = ImageTk.PhotoImage(img2)
-	img3 = ImageTk.PhotoImage(img3)
+	#loading images
+	img0 = ImageTk.PhotoImage(Image.open('Downloads/0.jpg').resize((w,h), Image.ANTIALIAS))
+	img1 = ImageTk.PhotoImage(Image.open('Downloads/1.jpg').resize((w,h), Image.ANTIALIAS))
+	img2 = ImageTk.PhotoImage(Image.open('Downloads/2.jpg').resize((w,h), Image.ANTIALIAS))
+	img3 = ImageTk.PhotoImage(Image.open('Downloads/3.jpg').resize((w,h), Image.ANTIALIAS))
 	#Displaying
 	Label(imageContainer, image=img0, bg='#EAEAEA').grid(row=0, column=0)
 	Label(imageContainer, image=img1, bg='#EAEAEA').grid(row=0, column=1)
