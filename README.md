@@ -27,7 +27,7 @@ It is an Personal Assistant, capable to perform many tasks with some unique feat
 23. ToDo List  
 24. Directions on Map  
 
-## Modules Installation:  
+## Modules Requirements and Installation:  
   pip install SpeechRecognition  
   pip install pyttsx3  
   pip install playsound  
