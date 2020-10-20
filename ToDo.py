@@ -23,8 +23,8 @@ def toDoList(text):
 	if (today-yesterday) >= 1:
 		createList()
 	f = open(file,"a")
-	dt_format = present.strftime("%H:%M:%S")
-	f.write(dt_format + " :- " + text + "\n")
+	dt_format = present.strftime("%H:%M")
+	f.write('['+dt_format+']' + " : " + text + "\n")
 	f.close()
 
 def showtoDoList():
