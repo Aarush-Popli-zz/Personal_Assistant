@@ -192,7 +192,14 @@ It is an Personal Assistant, capable to perform many tasks with some unique feat
   - Rock Paper Scissor  
   - Online Games  
   
-
+## Smart Reply  
+- How are you?  
+- Who are you?  
+- Tell me something  
+- When is your birthday?  
+- You're so funny  
+- Thank You  
+- I'm sorry  
 
 
 ### To get started, run SECURITY.py file to register your face and to use it...
