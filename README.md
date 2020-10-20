@@ -21,11 +21,12 @@ It is an Personal Assistant, capable to perform many tasks with some unique feat
 17. Window, Tab Operations  
 18. Open Websites  
 19. File Operations (Create)  
-20. Automated Project Creation  
+20. Automated Project (HTML Project)    
 21. Coin Toss, Roll Dice  
 22. Translator  
 23. ToDo List  
 24. Directions on Map  
+25. Screenshots
 
 ## Modules Requirements and Installation:  
   pip install SpeechRecognition  
