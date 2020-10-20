@@ -141,6 +141,7 @@ def changeTheme():
 	s.configure('Wild.TRadiobutton', background=background, foreground=textColor)
 	volumeBar['bg'], volumeBar['fg'], volumeBar['highlightbackground'] = background, textColor, background
 	chat_frame['bg'], root1['bg'] = chatBgColor, chatBgColor
+	userPhoto['activebackground'] = background
 	ChangeSettings(True)
 
 def changeVoice(e):
