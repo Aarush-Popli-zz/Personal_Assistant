@@ -481,7 +481,8 @@ def main(text):
 			speak("Ok "+ownerDesignation, True, True)
 			result = game.play(text)
 			if "Head" in result: showSingleImage('head')
-			else: showSingleImage('tail')
+			elif "Tail" in result: showSingleImage('tail')
+			else: showSingleImage(result[-1])
 			speak(result)
 			return
 		
@@ -554,19 +555,21 @@ def raise_frame(frame):
 ################# SHOWING DOWNLOADED IMAGES ###############
 img0, img1, img2, img3 = None, None, None, None
 def showSingleImage(type):
-	global img0, img1, img2
+	global img0, img1, img2, img3
 	img0 = ImageTk.PhotoImage(Image.open('Downloads/0.jpg').resize((90,110), Image.ANTIALIAS))
 	img1 = ImageTk.PhotoImage(Image.open('extrafiles/images/heads.jpg').resize((220,200), Image.ANTIALIAS))
 	img2 = ImageTk.PhotoImage(Image.open('extrafiles/images/tails.jpg').resize((220,200), Image.ANTIALIAS))
 
 	if type=="wiki":
 		Label(chat_frame, image=img0, bg='#EAEAEA').pack(anchor='w')
+	elif type=="head":
+		Label(chat_frame, image=img1, bg='#EAEAEA').pack(anchor='w')
+	elif type=="tail":
+		Label(chat_frame, image=img2, bg='#EAEAEA').pack(anchor='w')
 	else:
-		if type=="head":
-			Label(chat_frame, image=img1, bg='#EAEAEA').pack(anchor='w')
-		else:
-			Label(chat_frame, image=img2, bg='#EAEAEA').pack(anchor='w')
-			
+		img3 = ImageTk.PhotoImage(Image.open('extrafiles/images/dice/'+type+'.jpg').resize((200,200), Image.ANTIALIAS))
+		Label(chat_frame, image=img3, bg='#EAEAEA').pack(anchor='w')
+
 def showImages(query):
 	global img0, img1, img2, img3
 	webScrapping.downloadImage(query)
