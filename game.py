@@ -43,7 +43,7 @@ def record():
 			print(f"\nUser said: {said}")
 		except Exception as e:
 			print(e)
-			speak("I didn't get it, Say that again please...")
+			speak("I think it is invalid move...")
 			return "None"	
 	return said.lower()
 
@@ -149,29 +149,20 @@ def rockPaperScissorWindow():
 	root.geometry('%dx%d+%d+%d' % (w_width,w_height,x,y-30)) #center location of the screen
 	root.configure(bg='white')
 
-	rockImg = Image.open('extrafiles/ROCKPAPERSCISSOR/1.jpg')
-	rockImg = ImageTk.PhotoImage(rockImg)
-	paperImg = Image.open('extrafiles/ROCKPAPERSCISSOR/2.jpg')
-	paperImg = ImageTk.PhotoImage(paperImg)
-	scissorImg = Image.open('extrafiles/ROCKPAPERSCISSOR/3.jpg')
-	scissorImg = ImageTk.PhotoImage(scissorImg)
-	grayImg = Image.open('extrafiles/ROCKPAPERSCISSOR/grayQuestion.png')
-	grayImg = ImageTk.PhotoImage(grayImg)
-	orangeImg = Image.open('extrafiles/ROCKPAPERSCISSOR/orangeQuestion.jpg')
-	orangeImg = ImageTk.PhotoImage(orangeImg)
-	winImg = Image.open('extrafiles/ROCKPAPERSCISSOR/win.jpg')
-	winImg = ImageTk.PhotoImage(winImg)
-	loseImg = Image.open('extrafiles/ROCKPAPERSCISSOR/lose.jpg')
-	loseImg = ImageTk.PhotoImage(loseImg)
-	drawImg = Image.open('extrafiles/ROCKPAPERSCISSOR/draw.jpg')
-	drawImg = ImageTk.PhotoImage(drawImg)
+	rockImg = ImageTk.PhotoImage(Image.open('extrafiles/ROCKPAPERSCISSOR/1.jpg'))
+	paperImg = ImageTk.PhotoImage(Image.open('extrafiles/ROCKPAPERSCISSOR/2.jpg'))
+	scissorImg = ImageTk.PhotoImage(Image.open('extrafiles/ROCKPAPERSCISSOR/3.jpg'))
+	grayImg = ImageTk.PhotoImage(Image.open('extrafiles/ROCKPAPERSCISSOR/grayQuestion.png'))
+	orangeImg = ImageTk.PhotoImage(Image.open('extrafiles/ROCKPAPERSCISSOR/orangeQuestion.jpg'))
+	winImg = ImageTk.PhotoImage(Image.open('extrafiles/ROCKPAPERSCISSOR/win.jpg'))
+	loseImg = ImageTk.PhotoImage(Image.open('extrafiles/ROCKPAPERSCISSOR/lose.jpg'))
+	drawImg = ImageTk.PhotoImage(Image.open('extrafiles/ROCKPAPERSCISSOR/draw.jpg'))
 
 	toplbl = Label(root, text='Total Score', font=('Arial Bold', 20), fg='#FE8A28', bg='white').pack()
 	totalLabel = Label(root, text='0   |   0', font=('Arial Bold', 15), fg='#1F1F1F', bg='white')
 	totalLabel.pack()
 	#bottom image
-	img = Image.open('extrafiles/ROCKPAPERSCISSOR/rockPaperScissor.jpg')
-	img = ImageTk.PhotoImage(img)
+	img = ImageTk.PhotoImage(Image.open('extrafiles/ROCKPAPERSCISSOR/rockPaperScissor.jpg'))
 	downLbl = Label(root, image=img)
 	downLbl.pack(side=BOTTOM)
 	
@@ -190,8 +181,6 @@ def rockPaperScissorWindow():
 	Thread(target=playRock).start()
 	root.iconbitmap("extrafiles/images/game.ico")
 	root.mainloop()
-
-# rockPaperScissorWindow()
 
 def isContain(text, lst):
 	for word in lst:
@@ -223,3 +212,4 @@ def play(gameName):
 
 def showGames():
 	return "1. Rock Paper Scissor\n2. Online Games"
+
