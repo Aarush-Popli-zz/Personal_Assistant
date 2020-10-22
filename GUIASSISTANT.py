@@ -60,6 +60,8 @@ try:
 	user = UserData()
 	user.extractData()
 	ownerName = user.getName().split()[0]
+	ownerDesignation = "Sir"
+	if user.getGender()=="Female": ownerDesignation = "Ma'am"
 	ownerPhoto = user.getUserPhoto()
 except Exception as e:
 	print("You're not Registered Yet !\nRun SECURITY.py file to register your face.")
@@ -225,7 +227,7 @@ def voiceMedium():
 		query = record()
 		if query == 'None': continue
 		if isContain(query, EXIT_COMMANDS):
-			speak('Shutting down the System. Good Bye Sir!', True, True)
+			speak("Shutting down the System. Good Bye "+ownerDesignation+"!", True, True)
 			break
 		else: main(query.lower())
 	appControl.Win_Opt('close')
@@ -235,7 +237,7 @@ def keyboardInput(e):
 	if user_input!="":
 		clearChatScreen()
 		if isContain(user_input, EXIT_COMMANDS):
-			speak('Shutting down the System. Good Bye Sir!', True, True)
+			speak("Shutting down the System. Good Bye "+ownerDesignation+"!", True, True)
 		else:
 			Label(chat_frame, image=userIcon, bg=chatBgColor).pack(anchor='e',pady=0)
 			attachTOframe(user_input.capitalize())
@@ -310,14 +312,14 @@ def main(text):
 			return
 
 		if 'selfie' in text or ('click' in text and 'photo' in text):
-			speak('Sure Sir...', True, True)
+			speak("Sure "+ownerDesignation+"...", True, True)
 			clickPhoto()
 			speak('Do you want to view your clicked photo?', True)
 			query = record(False)
 			if isContain(query, ['yes', 'sure', 'yeah', 'show me']):
 				Thread(target=viewPhoto).start()
 			else:
-				speak('No Problem Sir', True, True)
+				speak("No Problem "+ownerDesignation, True, True)
 			return
 
 		if 'volume' in text:
@@ -332,7 +334,7 @@ def main(text):
 			return
 	
 		if 'whatsapp' in text:
-			speak('Sure Sir...', True, True)
+			speak("Sure "+ownerDesignation+"...", True, True)
 			speak('Whom do you want to send the message?', True)
 			WAEMPOPUP("WhatsApp", "Phone Number")
 			attachTOframe(rec_phoneno)
@@ -365,7 +367,7 @@ def main(text):
 			return
 
 		if isContain(text, ['youtube','video']):
-			speak('Ok Sir, here a video for you...', True, True)
+			speak("Ok "+ownerDesignation+", here a video for you...", True, True)
 			try:
 				speak(webScrapping.youtube(text), True)
 			except Exception as e:
@@ -384,9 +386,9 @@ def main(text):
 			if "direction" in text:
 				speak('What is your starting location?', True, True)
 				startingPoint = record(False, False)
-				speak('Ok Sir, Where you want to go?', True)
+				speak("Ok "+ownerDesignation+", Where you want to go?", True)
 				destinationPoint = record(False, False)
-				speak('Ok Sir, Getting Directions...', True)
+				speak("Ok "+ownerDesignation+", Getting Directions...", True)
 				try:
 					distance = webScrapping.giveDirections(startingPoint, destinationPoint)
 					speak('You have to cover a distance of '+ distance, True)
@@ -416,9 +418,9 @@ def main(text):
 			speak('Do you want to read the full news?', True)
 			text = record(False, False)
 			if isContain(text, ["no","don't"]):
-				speak('No Problem Sir')
+				speak("No Problem "+ownerDesignation)
 			else:
-				speak('Ok Sir, Opening browser...', True)
+				speak("Ok "+ownerDesignation+", Opening browser...", True)
 				webScrapping.openWebsite('https://indianexpress.com/latest-news/')
 				speak("You can now read the full news from this website.")
 			return
@@ -465,18 +467,18 @@ def main(text):
 				speak("Didn't understand what you say?", True, True)
 				return
 			if 'online' in text:
-				speak("Ok Sir, Let's play some online games", True, True)
+				speak("Ok "+ownerDesignation+", Let's play some online games", True, True)
 				webScrapping.openWebsite('https://www.agame.com/games/mini-games/')
 				return
 			if isContain(text, ["don't", "no", "cancel", "back", "never"]):
-				speak("No Problem Sir, We'll play next time.", True, True)
+				speak("No Problem "+ownerDesignation+", We'll play next time.", True, True)
 			else:
-				speak("Ok Sir, Let's Play " + text, True, True)
+				speak("Ok "+ownerDesignation+", Let's Play " + text, True, True)
 				os.system(f"python -c \"import game; game.play('{text}')\"")
 			return
 
 		if isContain(text, ['coin','dice','toss','roll','die']):
-			speak("Ok Sir", True, True)
+			speak("Ok "+ownerDesignation, True, True)
 			speak(game.play(text), True)
 			return
 		
@@ -498,7 +500,7 @@ def main(text):
 					else: voice_id=0
 				engine.setProperty('voice', voices[voice_id].id)
 				ChangeSettings(True)
-				speak("Hello Sir, I have changed my voice. How may I help you?", True, True)
+				speak("Hello "+ownerDesignation+", I have changed my voice. How may I help you?", True, True)
 				assVoiceOption.current(voice_id)
 			except Exception as e:
 				print(e)
@@ -631,7 +633,7 @@ def changeChatMode():
 		root.focus()
 		chatMode=1
 
-############################################## MAIN GUI #############################################
+############################################## GUI #############################################
 
 def onhover(e):
 	userPhoto['image'] = chngPh
@@ -654,7 +656,7 @@ def SelectAvatar():
 	Thread(target=UpdateIMAGE).start()
 
 
-######################################################################################################
+#####################################  MAIN GUI ####################################################
 if __name__ == '__main__':
 	# ChangeSettings()
 
@@ -754,15 +756,12 @@ if __name__ == '__main__':
 	separator.pack(fill=X)
 	#User Photo
 	userProfileImg = Image.open("extrafiles/images/avatars/a"+str(ownerPhoto)+".png")
-	userProfileImg = userProfileImg.resize((120, 120))
-	userProfileImg = ImageTk.PhotoImage(userProfileImg)
+	userProfileImg = ImageTk.PhotoImage(userProfileImg.resize((120, 120)))
 	userPhoto = Button(root2, image=userProfileImg, bg=background, bd=0, relief=FLAT, activebackground=background, command=SelectAvatar)
 	userPhoto.pack(pady=(20, 5))
 
 	#Change Photo
-	chngPh = Image.open("extrafiles/images/avatars/changephoto2.png")
-	chngPh = chngPh.resize((120, 120))
-	chngPh = ImageTk.PhotoImage(chngPh)
+	chngPh = ImageTk.PhotoImage(Image.open("extrafiles/images/avatars/changephoto2.png").resize((120, 120)))
 	
 	userPhoto.bind('<Enter>', onhover)
 	userPhoto.bind('<Leave>', onleave)
@@ -809,6 +808,9 @@ if __name__ == '__main__':
 	darkBtn.place(x=150,y=145)
 	lightBtn = ttk.Radiobutton(settingsFrame, text='Light', value=2, variable=themeValue, style='Wild.TRadiobutton', command=changeTheme, takefocus=False)
 	lightBtn.place(x=230,y=145)
+	themeValue.set(1)
+	if KCS_IMG==0: themeValue.set(2)
+
 
 	chooseChatLbl = Label(settingsFrame, text='Chat Background', font=('Arial', 13), fg=textColor, bg=background)
 	chooseChatLbl.place(x=0,y=180)
@@ -816,10 +818,11 @@ if __name__ == '__main__':
 	cimg = cimg.subsample(3,3)
 	colorbar = Label(settingsFrame, bd=3, width=18, height=1, bg=chatBgColor)
 	colorbar.place(x=150, y=180)
+	if KCS_IMG==0: colorbar['bg'] = '#E8EBEF'
 	Button(settingsFrame, image=cimg, relief=FLAT, command=getChatColor).place(x=261, y=180)
 
-	backBtn = Button(settingsFrame, text='   Back   ', font=('Arial 12'), fg='white', bg='#14A769', relief=FLAT, command=lambda:raise_frame(root1))
-	clearFaceBtn = Button(settingsFrame, text='   Clear Facial Data   ', font=('Arial 12'), fg='white', bg='#14A769', relief=FLAT, command=deleteUserData)
+	backBtn = Button(settingsFrame, text='   Back   ', bd=0, font=('Arial 12'), fg='white', bg='#14A769', activebackground=background, relief=FLAT, command=lambda:raise_frame(root1))
+	clearFaceBtn = Button(settingsFrame, text='   Clear Facial Data   ', bd=0, font=('Arial 12'), fg='white', bg='#14A769', activebackground=background, relief=FLAT, command=deleteUserData)
 	backBtn.place(x=5, y=250)
 	clearFaceBtn.place(x=120, y=250)
 
