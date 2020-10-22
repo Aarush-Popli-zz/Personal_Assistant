@@ -418,7 +418,7 @@ def main(text):
 			speak('Do you want to read the full news?', True)
 			text = record(False, False)
 			if isContain(text, ["no","don't"]):
-				speak("No Problem "+ownerDesignation)
+				speak("No Problem "+ownerDesignation, True)
 			else:
 				speak("Ok "+ownerDesignation+", Opening browser...", True)
 				webScrapping.openWebsite('https://indianexpress.com/latest-news/')
@@ -455,7 +455,7 @@ def main(text):
 			Thread(target=webScrapping.downloadImage, args=(text, 1,)).start()
 			speak('Searching...', True, True)
 			result = webScrapping.wikiResult(text)
-			showSingleImage()
+			showSingleImage('wiki')
 			speak(result, True)
 			return
 		
@@ -479,7 +479,10 @@ def main(text):
 
 		if isContain(text, ['coin','dice','toss','roll','die']):
 			speak("Ok "+ownerDesignation, True, True)
-			speak(game.play(text), True)
+			result = game.play(text)
+			if "Head" in result: showSingleImage('head')
+			else: showSingleImage('tail')
+			speak(result)
 			return
 		
 		if isContain(text, ['time','date']):
@@ -550,11 +553,20 @@ def raise_frame(frame):
 
 ################# SHOWING DOWNLOADED IMAGES ###############
 img0, img1, img2, img3 = None, None, None, None
-def showSingleImage():
-	global img0
+def showSingleImage(type):
+	global img0, img1, img2
 	img0 = ImageTk.PhotoImage(Image.open('Downloads/0.jpg').resize((90,110), Image.ANTIALIAS))
-	Label(chat_frame, image=img0, bg='#EAEAEA').pack(anchor='w')
+	img1 = ImageTk.PhotoImage(Image.open('extrafiles/images/heads.jpg').resize((220,200), Image.ANTIALIAS))
+	img2 = ImageTk.PhotoImage(Image.open('extrafiles/images/tails.jpg').resize((220,200), Image.ANTIALIAS))
 
+	if type=="wiki":
+		Label(chat_frame, image=img0, bg='#EAEAEA').pack(anchor='w')
+	else:
+		if type=="head":
+			Label(chat_frame, image=img1, bg='#EAEAEA').pack(anchor='w')
+		else:
+			Label(chat_frame, image=img2, bg='#EAEAEA').pack(anchor='w')
+			
 def showImages(query):
 	global img0, img1, img2, img3
 	webScrapping.downloadImage(query)
@@ -682,7 +694,7 @@ if __name__ == '__main__':
 	################################
 
 	#Chat Frame
-	chat_frame = Frame(root1, width=380,height=550,bg=chatBgColor)
+	chat_frame = Frame(root1, width=380,height=551,bg=chatBgColor)
 	chat_frame.pack(padx=10)
 	chat_frame.pack_propagate(0)
 
@@ -821,8 +833,8 @@ if __name__ == '__main__':
 	if KCS_IMG==0: colorbar['bg'] = '#E8EBEF'
 	Button(settingsFrame, image=cimg, relief=FLAT, command=getChatColor).place(x=261, y=180)
 
-	backBtn = Button(settingsFrame, text='   Back   ', bd=0, font=('Arial 12'), fg='white', bg='#14A769', activebackground=background, relief=FLAT, command=lambda:raise_frame(root1))
-	clearFaceBtn = Button(settingsFrame, text='   Clear Facial Data   ', bd=0, font=('Arial 12'), fg='white', bg='#14A769', activebackground=background, relief=FLAT, command=deleteUserData)
+	backBtn = Button(settingsFrame, text='   Back   ', bd=0, font=('Arial 12'), fg='white', bg='#14A769', relief=FLAT, command=lambda:raise_frame(root1))
+	clearFaceBtn = Button(settingsFrame, text='   Clear Facial Data   ', bd=0, font=('Arial 12'), fg='white', bg='#14A769', relief=FLAT, command=deleteUserData)
 	backBtn.place(x=5, y=250)
 	clearFaceBtn.place(x=120, y=250)
 
