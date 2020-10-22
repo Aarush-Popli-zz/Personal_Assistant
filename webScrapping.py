@@ -121,6 +121,43 @@ class WEATHER:
 	def weather(self):
 		return self.result
 
+
+c = COVID()
+w = WEATHER()
+
+def dataUpdate():
+	c.covidUpdate()
+	c.covidUpdateIndia()
+	w.updateWeather()
+
+##### WEATHER #####
+def weather():
+	return w.weather()
+
+### COVID ###
+def covid(query):
+	
+	if "india" in query: india_bool = True
+	else: india_bool = False
+
+	if "statistic" in query or 'report' in query:
+		return ["Here are the statistics...", ["Total cases: " + c.totalCases(india_bool), "Total Recovery: " + c.totalRecovery(india_bool), "Total Deaths: " + c.totalDeaths(india_bool)]]
+
+	elif "symptom" in query:
+		return ["Here are the Symptoms...", c.symptoms()]
+
+	elif "prevent" in query or "measure" in query or "precaution" in query:
+		return ["Here are the some of preventions from COVID-19:", c.prevention()]
+	
+	elif "recov" in query:
+		return "Total Recovery is: " + c.totalRecovery(india_bool)
+	
+	elif "death" in query:
+		return "Total Deaths are: " + c.totalDeaths(india_bool)
+	
+	else:
+		return "Total Cases are: " + c.totalCases(india_bool)
+
 def latestNews(news=5):
 	URL = 'https://indianexpress.com/latest-news/'
 	result = requests.get(URL)
@@ -198,42 +235,6 @@ def youtube(query):
 	return "Enjoy Sir..."
 
 
-c = COVID()
-w = WEATHER()
-
-def dataUpdate():
-	c.covidUpdate()
-	c.covidUpdateIndia()
-	w.updateWeather()
-
-##### WEATHER #####
-def weather():
-	return w.weather()
-
-### COVID ###
-def covid(query):
-	
-	if "india" in query: india_bool = True
-	else: india_bool = False
-
-	if "statistic" in query or 'report' in query:
-		return ["Here are the statistics...", ["Total cases: " + c.totalCases(india_bool), "Total Recovery: " + c.totalRecovery(india_bool), "Total Deaths: " + c.totalDeaths(india_bool)]]
-
-	elif "symptom" in query:
-		return ["Here are the Symptoms...", c.symptoms()]
-
-	elif "prevent" in query or "measure" in query or "precaution" in query:
-		return ["Here are the some of preventions from COVID-19:", c.prevention()]
-	
-	elif "recov" in query:
-		return "Total Recovery is: " + c.totalRecovery(india_bool)
-	
-	elif "death" in query:
-		return "Total Deaths are: " + c.totalDeaths(india_bool)
-	
-	else:
-		return "Total Cases are: " + c.totalCases(india_bool)
-
 def googleSearch(query):
 	if 'image' in query:
 		query += "&tbm=isch"
@@ -257,9 +258,9 @@ def email(rec_email=None, text="Hello, It's F.R.I.D.A.Y. here...", sub='F.R.I.D.
 	if '@gmail.com' not in rec_email: return
 	s = smtplib.SMTP('smtp.gmail.com', 587)
 	s.starttls()
-	s.login("SenderEmail", "SenderPassword")
+	s.login("fridayatyourservice@gmail.com", "11FRIDAYatyourservice00")
 	message = 'Subject: {}\n\n{}'.format(sub, text)
-	s.sendmail("SenderEmail", rec_email, message)
+	s.sendmail("fridayatyourservice@gmail.com", rec_email, message)
 	print("Sent")
 	s.quit()
 
