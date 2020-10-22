@@ -258,9 +258,9 @@ def email(rec_email=None, text="Hello, It's F.R.I.D.A.Y. here...", sub='F.R.I.D.
 	if '@gmail.com' not in rec_email: return
 	s = smtplib.SMTP('smtp.gmail.com', 587)
 	s.starttls()
-	s.login("fridayatyourservice@gmail.com", "11FRIDAYatyourservice00")
+	s.login("senderEmail", "senderPassword")
 	message = 'Subject: {}\n\n{}'.format(sub, text)
-	s.sendmail("fridayatyourservice@gmail.com", rec_email, message)
+	s.sendmail("senderEmail", rec_email, message)
 	print("Sent")
 	s.quit()
 
