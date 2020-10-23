@@ -13,8 +13,13 @@ class DateTime:
 		return time
 
 	def currentDate(self):
-		date = str(datetime.datetime.now())
-		return date[:10]
+		now = datetime.datetime.now()
+		day = now.strftime('%A')
+		date = str(now)[8:10]
+		month = now.strftime('%B')
+		year = str(now.year)
+		result = f'{day}, {date} {month}, {year}'
+		return result
 	
 def wishMe():
 	now = datetime.datetime.now()
@@ -42,10 +47,9 @@ def chat(text):
 	elif isContain(text, ['time']):
 		result = "Current Time is: " + dt.currentTime()
 	elif isContain(text, ['date','today','day','month']):
-		result = "Today is: " + dt.currentDate()
+		result = dt.currentDate()
 
 	return result
-
 
 data = json.load(open('extrafiles/NormalChat.json', encoding='utf-8'))
 
