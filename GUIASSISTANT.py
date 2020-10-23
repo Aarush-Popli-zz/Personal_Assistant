@@ -342,6 +342,7 @@ def main(text):
 			message = record(False, False)
 			Thread(target=webScrapping.sendWhatsapp, args=(rec_phoneno, message,)).start()
 			speak("Message is on the way. Do not move away from the screen.")
+			attachTOframe("Message Sended", True)
 			return
 
 		if 'email' in text:
@@ -426,7 +427,10 @@ def main(text):
 			return
 
 		if isContain(text, ['weather']):
-			speak(webScrapping.weather(), True, True)
+			data = webScrapping.weather()
+			speak('', False, True)
+			showSingleImage("weather", data[:-1])
+			speak(data[-1])
 			return
 
 		if isContain(text, ['screenshot']):
@@ -553,14 +557,24 @@ def raise_frame(frame):
 	clearChatScreen()
 
 ################# SHOWING DOWNLOADED IMAGES ###############
-img0, img1, img2, img3 = None, None, None, None
-def showSingleImage(type):
-	global img0, img1, img2, img3
+img0, img1, img2, img3, img4 = None, None, None, None, None
+def showSingleImage(type, data=None):
+	global img0, img1, img2, img3, img4
 	img0 = ImageTk.PhotoImage(Image.open('Downloads/0.jpg').resize((90,110), Image.ANTIALIAS))
 	img1 = ImageTk.PhotoImage(Image.open('extrafiles/images/heads.jpg').resize((220,200), Image.ANTIALIAS))
 	img2 = ImageTk.PhotoImage(Image.open('extrafiles/images/tails.jpg').resize((220,200), Image.ANTIALIAS))
+	img4 = ImageTk.PhotoImage(Image.open('extrafiles/images/WeatherImage.png'))
 
-	if type=="wiki":
+	if type=="weather":
+		weather = Frame(chat_frame)
+		weather.pack(anchor='w')
+		Label(weather, image=img4, bg=chatBgColor).pack()
+		Label(weather, text=data[0], font=('Arial Bold', 45), fg='white', bg='#3F48CC').place(x=65,y=45)
+		Label(weather, text=data[1], font=('Montserrat', 15), fg='white', bg='#3F48CC').place(x=78,y=110)
+		Label(weather, text=data[2], font=('Montserrat', 10), fg='white', bg='#3F48CC').place(x=80,y=140)
+		Label(weather, text=data[3], font=('Arial Bold', 12), fg='white', bg='#3F48CC').place(x=60,y=160)
+
+	elif type=="wiki":
 		Label(chat_frame, image=img0, bg='#EAEAEA').pack(anchor='w')
 	elif type=="head":
 		Label(chat_frame, image=img1, bg='#EAEAEA').pack(anchor='w')
@@ -569,7 +583,7 @@ def showSingleImage(type):
 	else:
 		img3 = ImageTk.PhotoImage(Image.open('extrafiles/images/dice/'+type+'.jpg').resize((200,200), Image.ANTIALIAS))
 		Label(chat_frame, image=img3, bg='#EAEAEA').pack(anchor='w')
-
+	
 def showImages(query):
 	global img0, img1, img2, img3
 	webScrapping.downloadImage(query)
@@ -612,7 +626,7 @@ def WAEMPOPUP(Service='None', rec='Reciever'):
 	x, y = (s_width/2)-(w_width/2), (s_height/2)-(w_height/2)
 	PopUProot.geometry('%dx%d+%d+%d' % (w_width,w_height,x,y-30)) #center location of the screen
 	Label(PopUProot, text=f'Reciever {rec}', font=('Arial', 16), bg='white').pack(pady=(20, 10))
-	WAEMEntry = Entry(PopUProot, bd=10, relief=FLAT, font=('Arial', 12), bg='#DCDCDC', width=30)
+	WAEMEntry = Entry(PopUProot, bd=10, relief=FLAT, font=('Arial', 12), justify='center', bg='#DCDCDC', width=30)
 	WAEMEntry.pack()
 	WAEMEntry.focus()
 
