@@ -90,12 +90,17 @@ def wikiResult(query):
 
 class WEATHER:
 	def __init__(self):
-		self.result = 'Not Available'
+		#Currently in Lucknow, its 26 with Haze
+		self.tempValue = ''
+		self.city = ''
+		self.currCondition = ''
+		self.speakResult = ''
 
 	def updateWeather(self):
 		res = requests.get("https://ipinfo.io/")
 		data = res.json()
-		URL = 'https://weather.com/en-IN/weather/today/l/'+data['loc']
+		# URL = 'https://weather.com/en-IN/weather/today/l/'+data['loc']
+		URL = 'https://weather.com/en-IN/weather/today/'
 		result = requests.get(URL)
 		src = result.content
 
@@ -103,24 +108,30 @@ class WEATHER:
 
 		city = ""
 		for h in soup.find_all('h1'):
-			city = h.text
-			city = city.replace('Weather','')
-			city = "Weather of " + city + " is "
+			cty = h.text
+			cty = cty.replace('Weather','')
+			self.city = cty[:cty.find(',')]
 			break
 
 		spans = soup.find_all('span')
-		#currently in Lucknow it's 29 with Haze
 		for span in spans:
 			try:
 				if span['data-testid']=="TemperatureValue":
-					self.result =  city + span.text+' Celcius.'
+					self.tempValue = span.text[:-1]
 					break
 			except Exception as e:
 				pass
 
-	def weather(self):
-		return self.result
+		divs = soup.find_all('div', class_='CurrentConditions--phraseValue--2xXSr')
+		for div in divs:
+			self.currCondition = div.text
+			break
 
+	def weather(self):
+		from datetime import datetime
+		today = datetime.today().strftime('%A')
+		self.speakResult = "Currently in " + self.city + ", its " + self.tempValue + " degree, with a " + self.currCondition 
+		return [self.tempValue, self.currCondition, today, self.city, self.speakResult]
 
 c = COVID()
 w = WEATHER()
@@ -258,9 +269,9 @@ def email(rec_email=None, text="Hello, It's F.R.I.D.A.Y. here...", sub='F.R.I.D.
 	if '@gmail.com' not in rec_email: return
 	s = smtplib.SMTP('smtp.gmail.com', 587)
 	s.starttls()
-	s.login("senderEmail", "senderPassword")
+	s.login("sendersEmail", "sendersPassword")
 	message = 'Subject: {}\n\n{}'.format(sub, text)
-	s.sendmail("senderEmail", rec_email, message)
+	s.sendmail("sendersEmail", rec_email, message)
 	print("Sent")
 	s.quit()
 
