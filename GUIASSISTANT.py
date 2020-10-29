@@ -233,7 +233,7 @@ def voiceMedium():
 	appControl.Win_Opt('close')
 
 def keyboardInput(e):
-	user_input = UserField.get()
+	user_input = UserField.get().lower()
 	if user_input!="":
 		clearChatScreen()
 		if isContain(user_input, EXIT_COMMANDS):
@@ -241,7 +241,7 @@ def keyboardInput(e):
 		else:
 			Label(chat_frame, image=userIcon, bg=chatBgColor).pack(anchor='e',pady=0)
 			attachTOframe(user_input.capitalize())
-			Thread(target=main, args=(user_input.lower(),)).start()
+			Thread(target=main, args=(user_input,)).start()
 		UserField.delete(0, END)
 
 ###################################### TASK/COMMAND HANDLER #########################################
@@ -318,6 +318,7 @@ def main(text):
 			query = record(False)
 			if isContain(query, ['yes', 'sure', 'yeah', 'show me']):
 				Thread(target=viewPhoto).start()
+				speak("Ok, here you go...", True, True)
 			else:
 				speak("No Problem "+ownerDesignation, True, True)
 			return
@@ -342,7 +343,7 @@ def main(text):
 			message = record(False, False)
 			Thread(target=webScrapping.sendWhatsapp, args=(rec_phoneno, message,)).start()
 			speak("Message is on the way. Do not move away from the screen.")
-			attachTOframe("Message Sended", True)
+			attachTOframe("Message Sent", True)
 			return
 
 		if 'email' in text:
@@ -354,7 +355,7 @@ def main(text):
 			speak('What message you want to send ?', True)
 			message = record(False, False)
 			Thread(target=webScrapping.email, args=(rec_email,message,subject,) ).start()
-			speak('Email has been Sended', True)
+			speak('Email has been Sent', True)
 			return
 
 		if isContain(text, ['covid','virus']):
@@ -375,8 +376,8 @@ def main(text):
 				speak("Desired Result Not Found", True)
 			return
 
-		if isContain(text, ['search', 'image', 'show the']):
-			if 'image' in text:
+		if isContain(text, ['search', 'image']):
+			if 'image' in text and 'show' in text:
 				Thread(target=showImages, args=(text,)).start()
 				speak('Here are the images...', True, True)
 				return
@@ -400,7 +401,7 @@ def main(text):
 				speak('Here you go...', True, True)
 			return
 
-		if isContain(text, ['factorial','value of','math',' + ',' - ',' x ','multiply','divided by','binary','hexadecimal','octal','shift','sin ','cos ','tan ']):
+		if isContain(text, ['factorial','log','value of','math',' + ',' - ',' x ','multiply','divided by','binary','hexadecimal','octal','shift','sin ','cos ','tan ']):
 			try:
 				speak(('Result is: ' + math_function.perform(text)), True, True)
 			except Exception as e:
@@ -481,14 +482,15 @@ def main(text):
 				os.system(f"python -c \"import game; game.play('{text}')\"")
 			return
 
-		if isContain(text, ['coin','dice','toss','roll','die']):
-			speak("Ok "+ownerDesignation, True, True)
-			result = game.play(text)
-			if "Head" in result: showSingleImage('head')
-			elif "Tail" in result: showSingleImage('tail')
-			else: showSingleImage(result[-1])
-			speak(result)
-			return
+		if isContain(text, ['coin','dice','die']):
+			if "toss" in text or "roll" in text or "flip" in text:
+				speak("Ok "+ownerDesignation, True, True)
+				result = game.play(text)
+				if "Head" in result: showSingleImage('head')
+				elif "Tail" in result: showSingleImage('tail')
+				else: showSingleImage(result[-1])
+				speak(result)
+				return
 		
 		if isContain(text, ['time','date']):
 			speak(normalChat.chat(text), True, True)
@@ -571,7 +573,7 @@ def showSingleImage(type, data=None):
 		Label(weather, image=img4, bg=chatBgColor).pack()
 		Label(weather, text=data[0], font=('Arial Bold', 45), fg='white', bg='#3F48CC').place(x=65,y=45)
 		Label(weather, text=data[1], font=('Montserrat', 15), fg='white', bg='#3F48CC').place(x=78,y=110)
-		Label(weather, text=data[2], font=('Montserrat', 10), fg='white', bg='#3F48CC').place(x=80,y=140)
+		Label(weather, text=data[2], font=('Montserrat', 10), fg='white', bg='#3F48CC').place(x=78,y=140)
 		Label(weather, text=data[3], font=('Arial Bold', 12), fg='white', bg='#3F48CC').place(x=60,y=160)
 
 	elif type=="wiki":
@@ -686,8 +688,44 @@ def SelectAvatar():
 
 
 #####################################  MAIN GUI ####################################################
+
+#### SPLASH/LOADING SCREEN ####
+def progressbar():
+	s = ttk.Style()
+	s.theme_use('clam')
+	s.configure("white.Horizontal.TProgressbar", foreground='white', background='white')
+	progress_bar = ttk.Progressbar(splash_root,style="white.Horizontal.TProgressbar", orient="horizontal",mode="determinate", length=303)
+	progress_bar.pack()
+	splash_root.update()
+	progress_bar['value'] = 0
+	splash_root.update()
+ 
+	while progress_bar['value'] < 100:
+		progress_bar['value'] += 5
+		# splash_percentage_label['text'] = str(progress_bar['value']) + ' %'
+		splash_root.update()
+		sleep(0.1)
+
+def destroySplash():
+	splash_root.destroy()
+
 if __name__ == '__main__':
-	# ChangeSettings()
+	splash_root = Tk()
+	splash_root.configure(bg='#3895d3')
+	splash_root.overrideredirect(True)
+	splash_label = Label(splash_root, text="Processing...", font=('montserrat',15),bg='#3895d3',fg='white')
+	splash_label.pack(pady=40)
+	# splash_percentage_label = Label(splash_root, text="0 %", font=('montserrat',15),bg='#3895d3',fg='white')
+	# splash_percentage_label.pack(pady=(0,10))
+
+	w_width, w_height = 400, 200
+	s_width, s_height = splash_root.winfo_screenwidth(), splash_root.winfo_screenheight()
+	x, y = (s_width/2)-(w_width/2), (s_height/2)-(w_height/2)
+	splash_root.geometry('%dx%d+%d+%d' % (w_width,w_height,x,y-30))
+
+	progressbar()
+	splash_root.after(10, destroySplash)
+	splash_root.mainloop()	
 
 	root = Tk()
 	root.title('F.R.I.D.A.Y')
