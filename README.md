@@ -56,6 +56,7 @@ It is an Personal Assistant, capable to perform many tasks with some unique feat
 - What is the value of factorial 10?  
 - What is the value of Sin 90?  
 - 9 power 5  
+- what is the log of 1000  
 
 ## Files Creation  
 - Create a empty file  
@@ -63,7 +64,7 @@ It is an Personal Assistant, capable to perform many tasks with some unique feat
 - Create a Java file  
 - Create a PowerPoint file  
 
-## Automated HTML Project  
+## Web Automation (HTML Project)  
 - Create a HTML project -> Project Name  
 (It will create Empty Project for you with HTML, CSS and JavaScript file with some important codes)  
 
