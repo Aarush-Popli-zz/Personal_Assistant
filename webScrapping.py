@@ -241,7 +241,9 @@ def youtube(query):
 	query = query.replace('play',' ')
 	query = query.replace('on youtube',' ')
 	query = query.replace('youtube',' ')
+	print("Pahuch Gya")
 	results = YoutubeSearch(query,max_results=1).to_dict()
+	print("Link mil gya")
 	webbrowser.open('https://www.youtube.com/watch?v=' + results[0]['id'])
 	return "Enjoy Sir..."
 
@@ -269,9 +271,9 @@ def email(rec_email=None, text="Hello, It's F.R.I.D.A.Y. here...", sub='F.R.I.D.
 	if '@gmail.com' not in rec_email: return
 	s = smtplib.SMTP('smtp.gmail.com', 587)
 	s.starttls()
-	s.login("sendersEmail", "sendersPassword")
+	s.login("fridayatyourservice@gmail.com", "11FRIDAYatyourservice00")
 	message = 'Subject: {}\n\n{}'.format(sub, text)
-	s.sendmail("sendersEmail", rec_email, message)
+	s.sendmail("fridayatyourservice@gmail.com", rec_email, message)
 	print("Sent")
 	s.quit()
 
