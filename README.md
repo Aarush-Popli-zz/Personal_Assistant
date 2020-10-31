@@ -19,14 +19,15 @@ It is an Personal Assistant, capable to perform many tasks with some unique feat
 15. Smart Dictionary Search  
 16. OS Info, Battery Info  
 17. Window, Tab Operations  
-18. Open Websites  
-19. File Operations (Create)  
-20. Automated Project (HTML Project)    
+18. Opening Websites  
+19. File Operations (Creating Files)  
+20. Web Automation (HTML Project)    
 21. Coin Toss, Roll Dice  
 22. Translator  
 23. ToDo List  
 24. Directions on Map  
-25. Screenshots
+25. Screenshots  
+26. Volume Control  
 
 ## Modules Requirements and Installation:  
   pip install SpeechRecognition  
@@ -106,7 +107,7 @@ It is an Personal Assistant, capable to perform many tasks with some unique feat
 - Take a Selfie  
 - Click a Photo  
 
-## Volume Settings  
+## Volume Control  
 - Increase the Volume  
 - Decrease the Volume  
 - Mute the Volume  
