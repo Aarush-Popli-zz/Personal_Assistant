@@ -2,7 +2,7 @@
 # GLOBAL VARIABLES USED #
 #########################
 ai_name = 'F.R.I.D.Y.'.lower()
-EXIT_COMMANDS = ['bye','exit','quit','shutdown']
+EXIT_COMMANDS = ['bye','exit','quit','shut down', 'shutdown']
 
 rec_email, rec_phoneno = "", ""
 WAEMEntry = None
@@ -562,7 +562,10 @@ def raise_frame(frame):
 img0, img1, img2, img3, img4 = None, None, None, None, None
 def showSingleImage(type, data=None):
 	global img0, img1, img2, img3, img4
-	img0 = ImageTk.PhotoImage(Image.open('Downloads/0.jpg').resize((90,110), Image.ANTIALIAS))
+	try:
+		img0 = ImageTk.PhotoImage(Image.open('Downloads/0.jpg').resize((90,110), Image.ANTIALIAS))
+	except:
+		pass
 	img1 = ImageTk.PhotoImage(Image.open('extrafiles/images/heads.jpg').resize((220,200), Image.ANTIALIAS))
 	img2 = ImageTk.PhotoImage(Image.open('extrafiles/images/tails.jpg').resize((220,200), Image.ANTIALIAS))
 	img4 = ImageTk.PhotoImage(Image.open('extrafiles/images/WeatherImage.png'))
@@ -652,13 +655,13 @@ chatMode = 1
 def changeChatMode():
 	global chatMode
 	if chatMode==1:
-		appControl.volumeControl('mute')
+		# appControl.volumeControl('mute')
 		VoiceModeFrame.pack_forget()
 		TextModeFrame.pack(fill=BOTH)
 		UserField.focus()
 		chatMode=0
 	else:
-		appControl.volumeControl('full')
+		# appControl.volumeControl('full')
 		TextModeFrame.pack_forget()
 		VoiceModeFrame.pack(fill=BOTH)
 		root.focus()
