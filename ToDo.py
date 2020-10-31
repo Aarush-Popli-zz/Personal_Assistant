@@ -24,14 +24,14 @@ def toDoList(text):
 		createList()
 	f = open(file,"a")
 	dt_format = present.strftime("%H:%M")
-	f.write('['+dt_format+']' + " : " + text + "\n")
+	print(dt_format)
+	f.write(f"[{dt_format}] : {text}\n")
 	f.close()
 
 def showtoDoList():
 	if os.path.isfile(file)==False:
 		return ["It looks like that list is empty"]
 	
-	print("Today's List")
 	f = open(file, 'r')
 	
 	items = []
@@ -40,5 +40,5 @@ def showtoDoList():
 
 	speakList = [f"You have {len(items)-1} items in your list:\n"]
 	for i in items[1:]:
-		speakList.append(i[:5] + " " + i[12:].capitalize())
+		speakList.append(i.capitalize())
 	return speakList
